@@ -332,7 +332,14 @@ pytest -q
 ```
 
 ```text
-ProofLens features an extensive automated test suite covering API contracts, data ingestion, deterministic auditing, repair-world logic, AST security validation, sandboxed execution, independent verification, metamorphic invariants, claim-level evidence matching, skeptic checks, Truth Gate decisions, Proof Cards, replay verification, and end-to-end behavior.
+........................................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 57%]
+........................................................................ [ 76%]
+........................................................................ [ 95%]
+..................                                                       [100%]
+
+379 passed, 1 skipped in 16.42s
 ```
 
 *(The single skipped test is the live cloud OpenRouter smoke test, which gracefully skips when no API key is set in the environment).*
