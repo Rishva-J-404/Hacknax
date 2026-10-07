@@ -469,3 +469,170 @@ def test_integration_with_data_quality_ledger():
         assert len(w.repaired_tables) == 1
         assert len(w.repair_history) > 0
         assert w.world_hash is not None
+
+
+# ---------------------------------------------------------------------------
+# 22. Focused Date Repair-World Impossibility Tests
+# ---------------------------------------------------------------------------
+
+def test_date_02_17_2025_dd_mm_invalid_world_no_crash():
+    """02/17/2025 under DD_MM_YYYY has month=17 (invalid). Must mark world unsafe without crash."""
+    table = _make_table("test_date_dd_fail", {"date": ["02/17/2025"]})
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.DD_MM_YYYY.value,
+        parameters={"column": "date"},
+        rationale="DD/MM/YYYY interpretation",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    assert len(worlds) == 1
+    w = worlds[0]
+    assert w.is_safe is False
+    assert len(w.safety_issues) > 0
+    assert "invalid day/month" in w.safety_issues[0]
+    # Source data copy in world is not mutated
+    assert w.repaired_tables[0].dataframe["date"].iloc[0] == "02/17/2025"
+
+
+def test_date_02_17_2025_mm_dd_valid():
+    """02/17/2025 under MM_DD_YYYY has month=2, day=17 (valid). Must succeed and be safe."""
+    table = _make_table("test_date_mm_ok", {"date": ["02/17/2025"]})
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.MM_DD_YYYY.value,
+        parameters={"column": "date"},
+        rationale="MM/DD/YYYY interpretation",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    assert len(worlds) == 1
+    w = worlds[0]
+    assert w.is_safe is True
+    assert len(w.safety_issues) == 0
+    assert w.repaired_tables[0].dataframe["date"].iloc[0] == "02/17/2025"
+
+
+def test_date_23_01_2025_mm_dd_invalid_world_no_crash():
+    """23/01/2025 under MM_DD_YYYY has month=23 (invalid). Must mark world unsafe without crash."""
+    table = _make_table("test_date_mm_fail", {"date": ["23/01/2025"]})
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.MM_DD_YYYY.value,
+        parameters={"column": "date"},
+        rationale="MM/DD/YYYY interpretation",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    assert len(worlds) == 1
+    w = worlds[0]
+    assert w.is_safe is False
+    assert len(w.safety_issues) > 0
+    assert "invalid day/month" in w.safety_issues[0]
+    assert w.repaired_tables[0].dataframe["date"].iloc[0] == "23/01/2025"
+
+
+def test_date_23_01_2025_dd_mm_valid():
+    """23/01/2025 under DD_MM_YYYY has day=23, month=1 (valid). Must succeed and be safe."""
+    table = _make_table("test_date_dd_ok", {"date": ["23/01/2025"]})
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.DD_MM_YYYY.value,
+        parameters={"column": "date"},
+        rationale="DD/MM/YYYY interpretation",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    assert len(worlds) == 1
+    w = worlds[0]
+    assert w.is_safe is True
+    assert len(w.safety_issues) == 0
+    assert w.repaired_tables[0].dataframe["date"].iloc[0] == "23/01/2025"
+
+
+def test_date_02_03_2025_both_worlds_remain():
+    """02/03/2025 is valid under both DD_MM and MM_DD. Both worlds must remain and be safe."""
+    table = _make_table("test_date_both", {"date": ["02/03/2025"]})
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.COMPARE.value,
+        parameters={"column": "date"},
+        rationale="Compare date interpretations",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    assert len(worlds) == 2
+    assert all(w.is_safe for w in worlds)
+    actions = [p.selected_action for w in worlds for p in w.policies]
+    assert DateFormatAction.DD_MM_YYYY.value in actions
+    assert DateFormatAction.MM_DD_YYYY.value in actions
+
+
+def test_original_data_untouched_on_impossible_date():
+    """Verify original input DataFrame is never mutated in place when policy is impossible."""
+    raw_df = pd.DataFrame({"date": ["02/17/2025", "23/01/2025"]})
+    table = LoadedTable(
+        source_path=Path("data/test_immutable.csv"),
+        file_type=FileType.CSV,
+        table_name="test_immutable",
+        sheet_name=None,
+        column_names=["date"],
+        row_count=2,
+        dataframe=raw_df,
+    )
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.AMBIGUOUS_DATE_FORMAT,
+        selected_action=DateFormatAction.DD_MM_YYYY.value,
+        parameters={"column": "date"},
+        rationale="DD_MM_YYYY",
+    )
+    worlds = engine.create_worlds([table], [policy])
+    # Original table remains completely untouched
+    assert table.dataframe["date"].tolist() == ["02/17/2025", "23/01/2025"]
+    assert raw_df["date"].tolist() == ["02/17/2025", "23/01/2025"]
+    assert worlds[0].is_safe is False
+
+
+def test_missing_policy_does_not_mutate_source_dataframe():
+    """REGRESSION TEST for BUG 10: Verify missing value policies never mutate input DataFrame."""
+    raw_df = pd.DataFrame({"amount": ["100", "", "300"], "name": ["A", "B", "C"]})
+    raw_df_copy = raw_df.copy(deep=True)
+    table = _make_table("missing_immutability", {"amount": ["100", "", "300"], "name": ["A", "B", "C"]})
+    original_df = table.dataframe
+
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.MISSING_VALUES,
+        selected_action=MissingValueAction.FILL_ZERO.value,
+        parameters={"column": "amount"},
+        rationale="Fill missing with zero",
+    )
+    worlds = engine.create_worlds([table], [policy])
+
+    # Check original input dataframe is unchanged
+    assert table.dataframe["amount"].tolist() == ["100", "", "300"]
+    pd.testing.assert_frame_equal(table.dataframe, original_df)
+    pd.testing.assert_frame_equal(table.dataframe, raw_df_copy)
+    # Repaired table should have the filled zero
+    assert worlds[0].repaired_tables[0].dataframe["amount"].tolist() == ["100", "0", "300"]
+
+
+def test_duplicate_policy_does_not_mutate_source_dataframe():
+    """Verify duplicate row policies never mutate input DataFrame."""
+    table = _make_table("dup_immutability", {"id": ["1", "1", "2"]})
+    original_len = len(table.dataframe)
+
+    engine = RepairEngine()
+    policy = RepairPolicy(
+        issue_type=IssueType.DUPLICATE_ROWS,
+        selected_action=DuplicateAction.EXACT_DEDUP.value,
+        parameters={},
+        rationale="Exact dedup",
+    )
+    worlds = engine.create_worlds([table], [policy])
+
+    assert len(table.dataframe) == original_len
+    assert len(worlds[0].repaired_tables[0].dataframe) == 2
+
+

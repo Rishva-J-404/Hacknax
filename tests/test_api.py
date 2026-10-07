@@ -210,3 +210,213 @@ def test_api_serves_frontend():
     assert response.status_code == 200
     assert "root" in response.text
 
+
+# 10. Test Custom Filename with Special Characters and Column Spaces
+def test_api_upload_and_analyze_custom_columns():
+    csv_bytes = (
+        b"Employee ID,Department,Total Salary\n"
+        b"101,Engineering,150000\n"
+        b"102,Product,120000\n"
+        b"103,Design,90000\n"
+    )
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("employee-data 2026.csv", csv_bytes, "text/csv"))],
+    )
+    assert up_res.status_code == 200
+    session_id = up_res.json()["session_id"]
+    file_info = up_res.json()["files"][0]
+    assert file_info["row_count"] == 3
+    assert "Total Salary" in file_info["columns"]
+
+    # Analyze with column name
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "What is the Total Salary?",
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] == "VERIFIED"
+    assert data["result"] == 360000.0
+
+
+# 11. Test JSON Array Upload and Row Count Question
+def test_api_upload_json_and_row_count():
+    json_bytes = b'[{"item": "Laptop", "stock": 10}, {"item": "Mouse", "stock": 50}]'
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("inventory.json", json_bytes, "application/json"))],
+    )
+    assert up_res.status_code == 200
+    session_id = up_res.json()["session_id"]
+    file_info = up_res.json()["files"][0]
+    assert file_info["row_count"] == 2
+
+    # Analyze row count
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "How many records are in this dataset?",
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] == "VERIFIED"
+    assert data["result"] == 2.0
+
+
+# 12. Test Impossible Date World Handling: 02/17/2025 under COMPARE (No HTTP 500)
+def test_api_analyze_impossible_date_world_no_500():
+    csv_bytes = (
+        b"order_id,amount,date\n"
+        b"1,150.0,01/02/2025\n"
+        b"2,250.0,02/17/2025\n"
+    )
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("dates_02_17.csv", csv_bytes, "text/csv"))],
+    )
+    assert up_res.status_code == 200
+    session_id = up_res.json()["session_id"]
+
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "Total order amount",
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] in ("VERIFIED", "VERIFIED_WITH_ASSUMPTION")
+    assert data["result"] == 400.0
+    assert data["answer_blocked"] is False
+    assert len(data["repair_worlds"]) >= 1
+
+
+# 13. Test Single Impossible Policy Override Returns Controlled Refusal (No HTTP 500)
+def test_api_analyze_impossible_date_single_policy_refusal():
+    csv_bytes = (
+        b"order_id,amount,date\n"
+        b"1,150.0,01/02/2025\n"
+        b"2,250.0,02/17/2025\n"
+    )
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("dates_single.csv", csv_bytes, "text/csv"))],
+    )
+    assert up_res.status_code == 200
+    session_id = up_res.json()["session_id"]
+
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "Total order amount",
+            "policy_overrides": {"AMBIGUOUS_DATE_FORMAT": "DD_MM_YYYY"},
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] == "UNANSWERABLE"
+    assert data["answer_blocked"] is True
+    assert data["result"] is None
+    assert "cannot convert date" in data["answer"].lower() or "impossible" in data["answer"].lower()
+
+
+# 14. Test Completely Invalid Date Returns Controlled Refusal (No HTTP 500)
+def test_api_analyze_completely_invalid_date_refusal():
+    csv_bytes = (
+        b"order_id,amount,date\n"
+        b"1,150.0,01/02/2025\n"
+        b"2,250.0,99/99/9999\n"
+    )
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("dates_bad.csv", csv_bytes, "text/csv"))],
+    )
+    assert up_res.status_code == 200
+    session_id = up_res.json()["session_id"]
+
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "Total order amount",
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] == "UNANSWERABLE"
+    assert data["answer_blocked"] is True
+    assert data["result"] is None
+
+
+# 15. Test XLSX Upload with Whitespace Columns and Full Analysis
+def test_api_upload_xlsx_with_whitespace_columns_and_analyze():
+    import io
+    import pandas as pd
+
+    df = pd.DataFrame({
+        "  order_id ": ["1", "2"],
+        " revenue   ": ["100", "200"],
+    })
+    buf = io.BytesIO()
+    df.to_excel(buf, index=False, engine="openpyxl")
+    xlsx_bytes = buf.getvalue()
+
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("sales.xlsx", xlsx_bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))],
+    )
+    assert up_res.status_code == 200
+    res_data = up_res.json()
+    session_id = res_data["session_id"]
+    file_info = res_data["files"][0]
+    # Verify column name was stripped of leading/trailing whitespace
+    assert "revenue" in file_info["columns"]
+
+    # Execute analysis on stripped column
+    analyze_res = client.post(
+        "/api/analyze",
+        json={
+            "session_id": session_id,
+            "question": "What is the total revenue?",
+            "planner_type": "deterministic",
+        },
+    )
+    assert analyze_res.status_code == 200
+    data = analyze_res.json()
+    assert data["status"] == "VERIFIED"
+    assert data["result"] == 300.0
+    assert data["answer_blocked"] is False
+
+
+# 16. Test Corrupted XLSX Upload Returns 400 (Not 500)
+def test_api_upload_corrupted_xlsx_returns_400():
+    up_res = client.post(
+        "/api/upload",
+        files=[("files", ("corrupted.xlsx", b"NOT_A_VALID_EXCEL_ZIP", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))],
+    )
+    assert up_res.status_code == 400
+    assert "Failed to ingest" in up_res.json()["detail"]
+
+
+# 17. Test Non-Existent Sample Load Returns 404 (Not 500)
+def test_api_load_nonexistent_sample_returns_404():
+    res = client.post("/api/samples/does_not_exist/load")
+    assert res.status_code == 404
+    assert "not found" in res.json()["detail"].lower()
+
+
+
+

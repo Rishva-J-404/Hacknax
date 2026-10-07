@@ -95,6 +95,7 @@ export default function Workspace() {
       setAuditLedger(res.audit_ledger || null);
       setAnalysisResult(null);
       setPipelineSteps([]);
+      setQuestion('Total order amount');
     } catch (err) {
       setErrorMessage(`Error loading sample: ${err.message}`);
     } finally {
@@ -114,11 +115,87 @@ export default function Workspace() {
       setAuditLedger(res.audit_ledger || null);
       setAnalysisResult(null);
       setPipelineSteps([]);
+
+      // Auto-adapt question if current question does not match any column in uploaded files
+      const firstFileCols = res.files?.[0]?.columns || [];
+      if (firstFileCols.length > 0) {
+        const lowerQuestion = (question || '').toLowerCase();
+        const matchesAnyCol = firstFileCols.some((c) => lowerQuestion.includes(c.toLowerCase()));
+        if (!matchesAnyCol) {
+          const metricKeywords = [
+            'amount', 'price', 'cost', 'revenue', 'sales', 'profit', 'salary',
+            'balance', 'fee', 'spend', 'total', 'val', 'rate', 'score', 'quantity', 'qty', 'units', 'age'
+          ];
+          const matchedMetric = firstFileCols.find((c) =>
+            metricKeywords.some((kw) => c.toLowerCase().includes(kw))
+          );
+          if (matchedMetric) {
+            setQuestion(`Total ${matchedMetric}`);
+          } else {
+            setQuestion('How many records in dataset');
+          }
+        }
+      }
     } catch (err) {
       setErrorMessage(`Upload error: ${err.message}`);
     } finally {
       setIsAuditing(false);
     }
+  };
+
+  const getDynamicSuggestions = () => {
+    if (!uploadedFiles || uploadedFiles.length === 0) {
+      return [
+        { label: 'Total order amount', query: 'Total order amount' },
+        { label: 'Total revenue', query: 'Total revenue' },
+        { label: 'Average order amount', query: 'What is the average order amount?' },
+        { label: 'Count of records', query: 'How many records in dataset' },
+      ];
+    }
+
+    const cols = uploadedFiles[0]?.columns || [];
+    if (cols.length === 0) {
+      return [
+        { label: 'How many records', query: 'How many records in dataset' },
+        { label: 'Count total rows', query: 'Count total rows' },
+      ];
+    }
+
+    const metricKeywords = [
+      'amount', 'price', 'cost', 'revenue', 'sales', 'profit', 'salary',
+      'balance', 'fee', 'spend', 'total', 'val', 'rate', 'score', 'quantity', 'qty', 'units', 'age'
+    ];
+    const metricCols = cols.filter((c) =>
+      metricKeywords.some((kw) => c.toLowerCase().includes(kw))
+    );
+
+    const suggestions = [];
+    if (metricCols.length > 0) {
+      suggestions.push({
+        label: `Total ${metricCols[0]}`,
+        query: `Total ${metricCols[0]}`,
+      });
+      if (metricCols.length > 1) {
+        suggestions.push({
+          label: `Total ${metricCols[1]}`,
+          query: `Total ${metricCols[1]}`,
+        });
+      }
+      suggestions.push({
+        label: `Average ${metricCols[0]}`,
+        query: `Average ${metricCols[0]}`,
+      });
+    } else if (cols.length > 0) {
+      suggestions.push({
+        label: `Total ${cols[0]}`,
+        query: `Total ${cols[0]}`,
+      });
+    }
+    suggestions.push({
+      label: 'Count records',
+      query: 'How many records in dataset',
+    });
+    return suggestions.slice(0, 4);
   };
 
   // Execute Analysis
@@ -136,6 +213,7 @@ export default function Workspace() {
     setAnalysisResult(null);
     setPipelineSteps([]);
     setErrorMessage(null);
+    setElapsedSeconds(0);
     const startTime = performance.now();
 
     const interval = setInterval(() => {
@@ -215,6 +293,15 @@ export default function Workspace() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Scroll on tab change
+  useEffect(() => {
+    if (activeTab === 'analysis') {
+      scrollToElement('command-bar-section');
+    } else if (activeTab === 'workspace') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [activeTab]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar
@@ -257,13 +344,16 @@ export default function Workspace() {
         <AnalysisHero />
 
         {/* Analytical Command Bar */}
-        <QuestionInput
-          question={question}
-          setQuestion={setQuestion}
-          onAnalyze={handleRunAnalysis}
-          isLoading={isLoading}
-          hasData={!!sessionId}
-        />
+        <div id="command-bar-section">
+          <QuestionInput
+            question={question}
+            setQuestion={setQuestion}
+            onAnalyze={handleRunAnalysis}
+            isLoading={isLoading}
+            hasData={!!sessionId}
+            suggestions={getDynamicSuggestions()}
+          />
+        </div>
 
         {/* 1. Data Sources */}
         <DatasetSources
@@ -313,6 +403,7 @@ export default function Workspace() {
                 answer={analysisResult.answer}
                 status={analysisResult.status}
                 proofId={analysisResult.proof_id}
+                question={question}
                 onViewProof={() => scrollToElement('proof-card-section')}
                 onViewCode={() => scrollToElement('code-viewer-section')}
                 onReplay={handleExecuteReplay}
@@ -321,6 +412,7 @@ export default function Workspace() {
               <RefusalCard
                 status={analysisResult.status}
                 answer={analysisResult.answer}
+                impactAnalysis={analysisResult.impact_analysis}
                 onViewProof={() => scrollToElement('proof-card-section')}
                 onViewCode={() => scrollToElement('code-viewer-section')}
               />

@@ -76,7 +76,7 @@
       "unit": null
     }
   ],
-  "created_at": "2026-10-07T11:14:01.758596",
+  "created_at": "2026-10-07T12:48:23.342400",
   "data_quality_ledger": {
     "all_issues": [
       {
@@ -113,7 +113,7 @@
         "severity": "HIGH"
       }
     ],
-    "audit_timestamp": "2026-10-07T11:14:01.142674+00:00",
+    "audit_timestamp": "2026-10-07T12:48:22.702163+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
@@ -214,7 +214,7 @@
   "deterministic_decision": "PERMITTED",
   "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 300.0.",
   "execution_summary": {
-    "duration_seconds": 0.4872,
+    "duration_seconds": 0.4809,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
@@ -366,13 +366,13 @@
           "file_type": "CSV",
           "row_count": 2,
           "sheet_name": null,
-          "source_path": "data\\uploads\\f995a8132247\\messy.csv",
+          "source_path": "data\\uploads\\f7e6a90ab995\\messy.csv",
           "table_name": "messy"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\f995a8132247\\messy.csv"
+        "data\\uploads\\f7e6a90ab995\\messy.csv"
       ],
       "world_data_path": null,
       "world_hash": "e60d01abd42b3ddc9b10eda2bcbf05343e53e9617b0423e1d825d6cc18dbd486",
@@ -406,7 +406,7 @@
   "result_type": "float",
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "f995a8132247",
+  "session_id": "f7e6a90ab995",
   "skeptic_review": {
     "concerns": [],
     "has_blocking_concerns": false,

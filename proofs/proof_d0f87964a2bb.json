@@ -3,14 +3,14 @@
   "analysis_plan": {
     "aggregation": {
       "column": {
-        "column": "amount",
-        "table": "orders"
+        "column": "val",
+        "table": "ambig"
       },
       "operation": "sum",
       "unit": null
     },
     "ambiguity_flags": [],
-    "analysis_intent": "SUM_AMOUNT",
+    "analysis_intent": "SUM_VAL",
     "assumptions": [
       "Calculated over all valid matching rows."
     ],
@@ -19,15 +19,15 @@
     "join_keys": [],
     "limit": null,
     "planner_notes": null,
-    "question": "Total order amount",
+    "question": "Total val",
     "required_columns": [
       {
-        "column": "amount",
-        "table": "orders"
+        "column": "val",
+        "table": "ambig"
       }
     ],
     "required_tables": [
-      "orders"
+      "ambig"
     ],
     "sort_ascending": true,
     "sort_by": null,
@@ -36,22 +36,25 @@
     "unanswerable_reason": null
   },
   "answer_blocked": false,
-  "assumptions": [],
+  "assumptions": [
+    "Interpreted date column 'date' as DD_MM_YYYY.",
+    "Interpreted date column 'date' as MM_DD_YYYY."
+  ],
   "blocking_reasons": [],
   "claims": [
     {
-      "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+      "claim_text": "Based on verified data analysis, the result for 'Total val' is 30.0.",
       "claim_type": "NUMERICAL_VALUE",
       "evidence_refs": [
         {
           "evidence_type": "execution_stdout",
           "reference": "world_world_001 authoritative execution result",
-          "value": "600.0"
+          "value": "30.0"
         },
         {
           "evidence_type": "duckdb_result",
           "reference": "independent DuckDB SQL calculation",
-          "value": "600.0"
+          "value": "30.0"
         },
         {
           "evidence_type": "verification_check",
@@ -60,37 +63,61 @@
         },
         {
           "evidence_type": "lineage",
-          "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-          "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+          "reference": "analysis code SHA-256: 9b562a767db78b63...",
+          "value": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a"
         }
       ],
       "mismatch_reason": null,
-      "normalized_value": 600.0,
-      "numerical_value": 600.0,
+      "normalized_value": 30.0,
+      "numerical_value": 30.0,
       "relevant_period": null,
-      "status": "VERIFIED",
-      "subject": "amount",
+      "status": "VERIFIED_WITH_ASSUMPTION",
+      "subject": null,
       "supported": true,
       "unit": null
     }
   ],
-  "created_at": "2026-10-07T12:48:21.432214",
+  "created_at": "2026-10-07T12:49:00.014727",
   "data_quality_ledger": {
-    "all_issues": [],
-    "audit_timestamp": "2026-10-07T12:48:20.753244+00:00",
+    "all_issues": [
+      {
+        "affected_columns": [
+          "date"
+        ],
+        "affected_source": "ambig",
+        "description": "Column 'date' in 'ambig' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+        "evidence": {
+          "ambiguous_count": 2,
+          "column": "date",
+          "has_part1_gt_12": false,
+          "has_part2_gt_12": false,
+          "possible_interpretations": [
+            "DD/MM/YYYY",
+            "MM/DD/YYYY"
+          ],
+          "sample_ambiguous_dates": [
+            "01/02/2024",
+            "03/04/2024"
+          ]
+        },
+        "issue_type": "AMBIGUOUS_DATE_FORMAT",
+        "severity": "HIGH"
+      }
+    ],
+    "audit_timestamp": "2026-10-07T12:48:59.060726+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
       {
         "column_count": 3,
         "column_names": [
-          "order_id",
-          "amount",
-          "status"
+          "id",
+          "date",
+          "val"
         ],
         "column_profiles": [
           {
-            "column_name": "order_id",
+            "column_name": "id",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "numeric",
@@ -99,14 +126,28 @@
             "missing_pct": 0.0,
             "sample_values": [
               "1",
-              "2",
-              "3"
+              "2"
             ],
-            "total_count": 3,
-            "unique_count": 3
+            "total_count": 2,
+            "unique_count": 2
           },
           {
-            "column_name": "amount",
+            "column_name": "date",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "date",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "01/02/2024",
+              "03/04/2024"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          },
+          {
+            "column_name": "val",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "numeric",
@@ -114,99 +155,114 @@
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "100.0",
-              "200.0",
-              "300.0"
+              "10",
+              "20"
             ],
-            "total_count": 3,
-            "unique_count": 3
-          },
-          {
-            "column_name": "status",
-            "detected_currencies": [],
-            "detected_units": [],
-            "inferred_type": "text",
-            "is_potential_key": false,
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "sample_values": [
-              "completed"
-            ],
-            "total_count": 3,
-            "unique_count": 1
+            "total_count": 2,
+            "unique_count": 2
           }
         ],
-        "dataset_sha256": "50ec8be5075260f77b97ea64732285564fb3ce72e5855c3a52b77a5907976465",
-        "issues": [],
-        "row_count": 3,
-        "source": "orders"
+        "dataset_sha256": "b7fd4de0536b6564c11eedd3ae3b9ffcd9f1611e4d63e60151e6079eabc032cc",
+        "issues": [
+          {
+            "affected_columns": [
+              "date"
+            ],
+            "affected_source": "ambig",
+            "description": "Column 'date' in 'ambig' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+            "evidence": {
+              "ambiguous_count": 2,
+              "column": "date",
+              "has_part1_gt_12": false,
+              "has_part2_gt_12": false,
+              "possible_interpretations": [
+                "DD/MM/YYYY",
+                "MM/DD/YYYY"
+              ],
+              "sample_ambiguous_dates": [
+                "01/02/2024",
+                "03/04/2024"
+              ]
+            },
+            "issue_type": "AMBIGUOUS_DATE_FORMAT",
+            "severity": "HIGH"
+          }
+        ],
+        "row_count": 2,
+        "source": "ambig"
       }
     ]
   },
   "deterministic_decision": "PERMITTED",
-  "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+  "draft_explanation": "Based on verified data analysis, the result for 'Total val' is 30.0.",
   "execution_summary": {
-    "duration_seconds": 0.5141,
+    "duration_seconds": 0.4168,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
-    "generated_code_hash": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+    "generated_code_hash": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a",
     "input_data_hashes": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "ambig": "9eaa2fc7d875841e796ecc9b6ca47944d4b4ce4404459fb518103c034eff543c"
     },
     "row_count_waterfall": {},
     "stderr": "",
-    "stdout": "600.0\n"
+    "stdout": "30.0\n"
   },
-  "formatted_result": "600.0",
+  "formatted_result": "30.0",
   "hashes": {
-    "analysis_code_sha256": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
-    "canonical_proof_sha256": "b54eec1638e72b4f512d2be025ba13c012e3cb7189b6481100e25574f57433d9",
+    "analysis_code_sha256": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a",
+    "canonical_proof_sha256": "d0f87964a2bb51749290efd32adfe791d7cec332d2184a7888cac220ec1739b7",
     "dataset_sha256": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "ambig": "9eaa2fc7d875841e796ecc9b6ca47944d4b4ce4404459fb518103c034eff543c"
     },
-    "policy_sha256": "fa07ec4d8535f106a25ed947e2aea88a41c2d103298d4eb205cfa19b22476c53"
+    "policy_sha256": "d986d944373dafebb9134ef1a1296a2bf5b2dd08fca4e81c4c9bedf1e512ba3f"
   },
-  "impact_range": {},
+  "impact_range": {
+    "decision_stable": 1.0,
+    "maximum": 30.0,
+    "minimum": 30.0,
+    "spread": 0.0,
+    "value_stable": 1.0
+  },
   "lineage": {
     "columns_used": [
-      "orders.amount"
+      "ambig.val"
     ],
     "filters_applied": [],
     "joins_performed": [],
-    "repair_policy_summary": "DUPLICATE_ROWS: KEEP",
+    "repair_policy_summary": "AMBIGUOUS_DATE_FORMAT: DD_MM_YYYY; AMBIGUOUS_DATE_FORMAT: MM_DD_YYYY",
     "source_files": [
-      "orders"
+      "ambig"
     ],
     "tables_used": [
-      "orders"
+      "ambig"
     ],
     "transformations": [
-      "SUM(orders.amount)"
+      "SUM(ambig.val)"
     ]
   },
   "metamorphic_summary": [
     {
-      "expected": "600.0",
+      "expected": "30.0",
       "name": "METAMORPHIC_ROW_SHUFFLE",
-      "observed": "600.0",
+      "observed": "30.0",
       "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Reversed rows (iloc[::-1]) on all input tables."
     },
     {
-      "expected": "700.0",
+      "expected": "40.0",
       "name": "METAMORPHIC_DUPLICATE_INJECTION",
-      "observed": "700.0",
+      "observed": "40.0",
       "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended clone of row 0 to main table."
     },
     {
-      "expected": "600.0",
+      "expected": "30.0",
       "name": "METAMORPHIC_ADD_ZERO",
-      "observed": "600.0",
-      "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "observed": "30.0",
+      "reason": "Added row with val=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended synthetic row with 0.0 metric value."
     },
@@ -219,10 +275,10 @@
       "transformation": "None"
     },
     {
-      "expected": "<= 600.0",
+      "expected": "<= 30.0",
       "name": "METAMORPHIC_FILTER_MONOTONICITY",
-      "observed": "100.0",
-      "reason": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
+      "observed": "10.0",
+      "reason": "Subset (first 1 rows) resulted in 10.0 <= 30.0",
       "status": "PASS",
       "transformation": "Restricted dataset to first half of rows."
     },
@@ -243,82 +299,144 @@
       "transformation": "None"
     }
   ],
-  "normalized_question": "Total order amount",
-  "proof_id": "proof_b54eec1638e7",
-  "question": "Total order amount",
+  "normalized_question": "Total val",
+  "proof_id": "proof_d0f87964a2bb",
+  "question": "Total val",
   "refusal_reason": null,
   "relevant_period": null,
   "repair_worlds": [
     {
-      "assumptions": [],
-      "description": "World 1: DUPLICATE_ROWS:KEEP",
+      "assumptions": [
+        "Interpreted date column 'date' as DD_MM_YYYY."
+      ],
+      "description": "World 1: AMBIGUOUS_DATE_FORMAT:DD_MM_YYYY",
       "is_safe": true,
       "policies": [
         {
           "affected_sources": [],
-          "issue_type": "DUPLICATE_ROWS",
-          "parameters": {},
-          "rationale": "Data audit clean; using original data as World 1 baseline.",
-          "selected_action": "KEEP"
+          "issue_type": "AMBIGUOUS_DATE_FORMAT",
+          "parameters": {
+            "column": "date"
+          },
+          "rationale": "World branch: DD/MM/YYYY date interpretation",
+          "selected_action": "DD_MM_YYYY"
         }
       ],
       "repair_history": [
         {
           "affected_rows": 0,
-          "column": null,
+          "column": "date",
           "details": {},
-          "operation": "KEEP",
-          "reason": "Duplicate policy: KEEP (all rows preserved including duplicates)",
-          "rows_after": 3,
-          "rows_before": 3,
-          "table": "orders"
+          "operation": "DATE_CONVERSION",
+          "reason": "Date policy: DD_MM_YYYY applied to 'date'",
+          "rows_after": 2,
+          "rows_before": 2,
+          "table": "ambig"
         }
       ],
       "repaired_tables": [
         {
           "column_names": [
-            "order_id",
-            "amount",
-            "status"
+            "id",
+            "date",
+            "val"
           ],
           "dataframe": [
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
+              "date": "01/02/2024",
+              "id": "1",
+              "val": "10"
             },
             {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
-            },
-            {
-              "amount": "300.0",
-              "order_id": "3",
-              "status": "completed"
+              "date": "03/04/2024",
+              "id": "2",
+              "val": "20"
             }
           ],
           "file_type": "CSV",
-          "row_count": 3,
+          "row_count": 2,
           "sheet_name": null,
-          "source_path": "data\\uploads\\0599304ac647\\orders.csv",
-          "table_name": "orders"
+          "source_path": "data\\uploads\\0b5f5051bb89\\ambig.csv",
+          "table_name": "ambig"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\0599304ac647\\orders.csv"
+        "data\\uploads\\0b5f5051bb89\\ambig.csv"
       ],
       "world_data_path": null,
-      "world_hash": "a64308f7c80264ea440884955ca4a27a0c9b208e910cf9663fa270b23fb90914",
+      "world_hash": "5f0b9ee5bf5b96f19f5a8f803969cb17b9e53a1357a1cb3bc0e1220fa54e9402",
       "world_id": "world_001"
+    },
+    {
+      "assumptions": [
+        "Interpreted date column 'date' as MM_DD_YYYY."
+      ],
+      "description": "World 2: AMBIGUOUS_DATE_FORMAT:MM_DD_YYYY",
+      "is_safe": true,
+      "policies": [
+        {
+          "affected_sources": [],
+          "issue_type": "AMBIGUOUS_DATE_FORMAT",
+          "parameters": {
+            "column": "date"
+          },
+          "rationale": "World branch: MM/DD/YYYY date interpretation",
+          "selected_action": "MM_DD_YYYY"
+        }
+      ],
+      "repair_history": [
+        {
+          "affected_rows": 0,
+          "column": "date",
+          "details": {},
+          "operation": "DATE_CONVERSION",
+          "reason": "Date policy: MM_DD_YYYY applied to 'date'",
+          "rows_after": 2,
+          "rows_before": 2,
+          "table": "ambig"
+        }
+      ],
+      "repaired_tables": [
+        {
+          "column_names": [
+            "id",
+            "date",
+            "val"
+          ],
+          "dataframe": [
+            {
+              "date": "01/02/2024",
+              "id": "1",
+              "val": "10"
+            },
+            {
+              "date": "03/04/2024",
+              "id": "2",
+              "val": "20"
+            }
+          ],
+          "file_type": "CSV",
+          "row_count": 2,
+          "sheet_name": null,
+          "source_path": "data\\uploads\\0b5f5051bb89\\ambig.csv",
+          "table_name": "ambig"
+        }
+      ],
+      "safety_issues": [],
+      "source_file_refs": [
+        "data\\uploads\\0b5f5051bb89\\ambig.csv"
+      ],
+      "world_data_path": null,
+      "world_hash": "5f0b9ee5bf5b96f19f5a8f803969cb17b9e53a1357a1cb3bc0e1220fa54e9402",
+      "world_id": "world_002"
     }
   ],
   "replay": {
-    "canonical_payload_sha256": "b54eec1638e72b4f512d2be025ba13c012e3cb7189b6481100e25574f57433d9",
-    "code_sha256": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+    "canonical_payload_sha256": "d0f87964a2bb51749290efd32adfe791d7cec332d2184a7888cac220ec1739b7",
+    "code_sha256": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a",
     "dataset_sha256": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "ambig": "9eaa2fc7d875841e796ecc9b6ca47944d4b4ce4404459fb518103c034eff543c"
     },
     "dependencies": {
       "duckdb": "1.5.6",
@@ -326,46 +444,48 @@
       "pydantic": "2.13.5"
     },
     "platform": "win32",
-    "proof_id": "proof_b54eec1638e7",
+    "proof_id": "proof_d0f87964a2bb",
     "python_version": "3.11.9",
     "replay_executable": true,
-    "reproduction_command": "python scripts/replay.py proofs/proof_b54eec1638e7.json",
+    "reproduction_command": "python scripts/replay.py proofs/proof_d0f87964a2bb.json",
     "tolerance": {
       "abs_tol": 1e-06,
       "rel_tol": 0.0001
     },
     "world_id": "world_001"
   },
-  "reproduction_command": "python scripts/replay.py proofs/proof_b54eec1638e7.json",
-  "result": 600.0,
+  "reproduction_command": "python scripts/replay.py proofs/proof_d0f87964a2bb.json",
+  "result": 30.0,
   "result_type": "float",
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "0599304ac647",
+  "session_id": "0b5f5051bb89",
   "skeptic_review": {
     "concerns": [],
     "has_blocking_concerns": false,
     "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
   },
-  "status": "VERIFIED",
+  "status": "VERIFIED_WITH_ASSUMPTION",
   "truth_gate_result": {
     "answer_blocked": false,
-    "assumptions": [],
+    "assumptions": [
+      "Interpreted date column 'date' as DD_MM_YYYY."
+    ],
     "blocking_reasons": [],
     "claims": [
       {
-        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_text": "Based on verified data analysis, the result for 'Total val' is 30.0.",
         "claim_type": "NUMERICAL_VALUE",
         "evidence_refs": [
           {
             "evidence_type": "execution_stdout",
             "reference": "world_world_001 authoritative execution result",
-            "value": "600.0"
+            "value": "30.0"
           },
           {
             "evidence_type": "duckdb_result",
             "reference": "independent DuckDB SQL calculation",
-            "value": "600.0"
+            "value": "30.0"
           },
           {
             "evidence_type": "verification_check",
@@ -374,16 +494,16 @@
           },
           {
             "evidence_type": "lineage",
-            "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-            "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+            "reference": "analysis code SHA-256: 9b562a767db78b63...",
+            "value": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a"
           }
         ],
         "mismatch_reason": null,
-        "normalized_value": 600.0,
-        "numerical_value": 600.0,
+        "normalized_value": 30.0,
+        "numerical_value": 30.0,
         "relevant_period": null,
-        "status": "VERIFIED",
-        "subject": "amount",
+        "status": "VERIFIED_WITH_ASSUMPTION",
+        "subject": null,
         "supported": true,
         "unit": null
       }
@@ -393,12 +513,12 @@
       {
         "evidence_type": "execution_stdout",
         "reference": "world_world_001 authoritative execution result",
-        "value": "600.0"
+        "value": "30.0"
       },
       {
         "evidence_type": "duckdb_result",
         "reference": "independent DuckDB SQL calculation",
-        "value": "600.0"
+        "value": "30.0"
       },
       {
         "evidence_type": "verification_check",
@@ -407,12 +527,12 @@
       },
       {
         "evidence_type": "lineage",
-        "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-        "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+        "reference": "analysis code SHA-256: 9b562a767db78b63...",
+        "value": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a"
       }
     ],
     "failed_claims": [],
-    "overall_status": "VERIFIED",
+    "overall_status": "VERIFIED_WITH_ASSUMPTION",
     "skeptic_review": {
       "concerns": [],
       "has_blocking_concerns": false,
@@ -421,18 +541,18 @@
     "unsupported_claims": [],
     "verified_claims": [
       {
-        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_text": "Based on verified data analysis, the result for 'Total val' is 30.0.",
         "claim_type": "NUMERICAL_VALUE",
         "evidence_refs": [
           {
             "evidence_type": "execution_stdout",
             "reference": "world_world_001 authoritative execution result",
-            "value": "600.0"
+            "value": "30.0"
           },
           {
             "evidence_type": "duckdb_result",
             "reference": "independent DuckDB SQL calculation",
-            "value": "600.0"
+            "value": "30.0"
           },
           {
             "evidence_type": "verification_check",
@@ -441,16 +561,16 @@
           },
           {
             "evidence_type": "lineage",
-            "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-            "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+            "reference": "analysis code SHA-256: 9b562a767db78b63...",
+            "value": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a"
           }
         ],
         "mismatch_reason": null,
-        "normalized_value": 600.0,
-        "numerical_value": 600.0,
+        "normalized_value": 30.0,
+        "numerical_value": 30.0,
         "relevant_period": null,
-        "status": "VERIFIED",
-        "subject": "amount",
+        "status": "VERIFIED_WITH_ASSUMPTION",
+        "subject": null,
         "supported": true,
         "unit": null
       }
@@ -460,7 +580,7 @@
     {
       "checks": [
         {
-          "actual": "600.0",
+          "actual": "30.0",
           "check": "PANDAS_PRIMARY",
           "detail": "Primary execution succeeded and emitted authoritative result.",
           "expected": null,
@@ -481,38 +601,38 @@
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "30.0",
           "check": "DUCKDB_SECONDARY",
           "detail": "Independent DuckDB query executed successfully.",
           "expected": null,
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "30.0",
           "check": "MATCH_CHECK",
           "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "30.0",
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "30.0",
           "check": "METAMORPHIC_ROW_SHUFFLE",
           "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "30.0",
           "outcome": "PASS"
         },
         {
-          "actual": "700.0",
+          "actual": "40.0",
           "check": "METAMORPHIC_DUPLICATE_INJECTION",
           "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "700.0",
+          "expected": "40.0",
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "30.0",
           "check": "METAMORPHIC_ADD_ZERO",
-          "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "detail": "Added row with val=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "30.0",
           "outcome": "PASS"
         },
         {
@@ -523,10 +643,10 @@
           "outcome": "SKIPPED"
         },
         {
-          "actual": "100.0",
+          "actual": "10.0",
           "check": "METAMORPHIC_FILTER_MONOTONICITY",
-          "detail": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
-          "expected": "<= 600.0",
+          "detail": "Subset (first 1 rows) resulted in 10.0 <= 30.0",
+          "expected": "<= 30.0",
           "outcome": "PASS"
         },
         {
@@ -544,35 +664,35 @@
           "outcome": "SKIPPED"
         }
       ],
-      "duckdb_result": 600.0,
+      "duckdb_result": 30.0,
       "failures": [],
       "impact": null,
-      "independent_result": 600.0,
+      "independent_result": 30.0,
       "metamorphic_results": [
         {
           "applicable": true,
           "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "30.0",
           "name": "METAMORPHIC_ROW_SHUFFLE",
-          "observed": "600.0",
+          "observed": "30.0",
           "status": "PASS",
           "transformation": "Reversed rows (iloc[::-1]) on all input tables."
         },
         {
           "applicable": true,
           "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "700.0",
+          "expected": "40.0",
           "name": "METAMORPHIC_DUPLICATE_INJECTION",
-          "observed": "700.0",
+          "observed": "40.0",
           "status": "PASS",
           "transformation": "Appended clone of row 0 to main table."
         },
         {
           "applicable": true,
-          "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "details": "Added row with val=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "30.0",
           "name": "METAMORPHIC_ADD_ZERO",
-          "observed": "600.0",
+          "observed": "30.0",
           "status": "PASS",
           "transformation": "Appended synthetic row with 0.0 metric value."
         },
@@ -587,10 +707,10 @@
         },
         {
           "applicable": true,
-          "details": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
-          "expected": "<= 600.0",
+          "details": "Subset (first 1 rows) resulted in 10.0 <= 30.0",
+          "expected": "<= 30.0",
           "name": "METAMORPHIC_FILTER_MONOTONICITY",
-          "observed": "100.0",
+          "observed": "10.0",
           "status": "PASS",
           "transformation": "Restricted dataset to first half of rows."
         },
@@ -613,29 +733,31 @@
           "transformation": "None"
         }
       ],
-      "pandas_result": 600.0,
-      "primary_result": 600.0,
+      "pandas_result": 30.0,
+      "primary_result": 30.0,
       "provenance_details": {
-        "code_hash": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+        "code_hash": "9b562a767db78b632f516bc5e7b245ce0c9072adaba5b9320a082a722a51aa1a",
         "current_table_hashes": {
-          "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+          "ambig": "9eaa2fc7d875841e796ecc9b6ca47944d4b4ce4404459fb518103c034eff543c"
         },
         "recorded_table_hashes": {
-          "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+          "ambig": "9eaa2fc7d875841e796ecc9b6ca47944d4b4ce4404459fb518103c034eff543c"
         },
         "world_id": "world_001"
       },
       "provenance_verified": true,
       "results_match": true,
-      "status": "VERIFIED",
+      "status": "VERIFIED_WITH_ASSUMPTION",
       "tolerance_abs": 1e-09,
       "tolerance_rel": 1e-09,
       "verification_passed": true,
       "warnings": [],
-      "world_assumptions": [],
+      "world_assumptions": [
+        "Interpreted date column 'date' as DD_MM_YYYY."
+      ],
       "world_id": "world_001",
       "world_policies": [
-        "DUPLICATE_ROWS: KEEP"
+        "AMBIGUOUS_DATE_FORMAT: DD_MM_YYYY"
       ]
     }
   ]

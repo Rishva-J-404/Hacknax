@@ -143,14 +143,19 @@ class DeterministicPlanner(PlannerBackend):
         # ── 5. Recognize Intent & Target Metrics ─────────────────────────────
 
         # A. Count Rows / Transactions
-        if any(q_lower.startswith(prefix) for prefix in ["how many transactions", "how many rows", "number of transactions", "count of transactions", "total transactions", "count rows"]):
+        is_row_count = any(phrase in q_lower for phrase in [
+            "how many rows", "how many records", "how many transactions", "how many items", "how many orders",
+            "number of rows", "number of records", "number of transactions", "number of items", "number of orders",
+            "count of rows", "count rows", "count records", "total rows", "total records", "total transactions",
+            "row count", "record count", "table count", "how many entries", "number of entries",
+        ]) or q_lower.strip() in {"count", "row count", "records", "how many"}
+
+        if is_row_count:
             target_table = tables[0].table_name
-            # If a specific table matches
             for t in tables:
                 if t.table_name.lower() in q_lower:
                     target_table = t.table_name
                     break
-            # Pick primary key or first column
             first_col = tables[0].column_names[0]
             col_ref = ColumnRef(table=target_table, column=first_col)
             return AnalysisPlan(
@@ -301,15 +306,33 @@ class DeterministicPlanner(PlannerBackend):
         is_sum = any(w in q_lower for w in ["total", "sum", "overall"]) or (not is_avg and "what is the" in q_lower)
 
         # Check required metric name
-        metric_keywords = ["revenue", "sales", "amount", "profit", "price", "cost", "score"]
         requested_metric = None
-        for m in metric_keywords:
-            if m in q_lower:
-                requested_metric = m
+        direct_matched_col: ColumnRef | None = None
+        # 1. Match against actual columns of loaded tables
+        for t in tables:
+            for c in t.column_names:
+                c_clean = c.strip().lower()
+                if c_clean and len(c_clean) >= 2 and re.search(r'\b' + re.escape(c_clean) + r'\b', q_lower):
+                    direct_matched_col = ColumnRef(table=t.table_name, column=c)
+                    requested_metric = c_clean
+                    break
+            if direct_matched_col:
                 break
 
+        # 2. Check standard metric keywords
+        metric_keywords = [
+            "revenue", "sales", "amount", "profit", "price", "cost", "score",
+            "salary", "income", "value", "val", "quantity", "qty", "balance",
+            "spend", "rate", "fee", "tax", "discount", "total", "weight", "rating"
+        ]
         if not requested_metric:
-            # Fallback search for any known numerical column
+            for m in metric_keywords:
+                if re.search(r'\b' + re.escape(m) + r'\b', q_lower):
+                    requested_metric = m
+                    break
+
+        if not requested_metric:
+            # Fallback search for any known numerical column in tables
             for t in tables:
                 for c in t.column_names:
                     if any(m in c.lower() for m in metric_keywords):
@@ -318,7 +341,22 @@ class DeterministicPlanner(PlannerBackend):
                 if requested_metric:
                     break
 
-        if not requested_metric:
+        # 3. If user asked general total or average without specifying column, pick first numeric column
+        if not requested_metric and (is_avg or is_sum or "what is" in q_lower):
+            for t in tables:
+                for c in t.column_names:
+                    try:
+                        num_s = pd.to_numeric(t.dataframe[c].dropna(), errors="coerce").dropna()
+                        if len(num_s) > 0 and len(num_s) >= len(t.dataframe) * 0.5:
+                            requested_metric = c.lower()
+                            direct_matched_col = ColumnRef(table=t.table_name, column=c)
+                            break
+                    except Exception:
+                        pass
+                if direct_matched_col:
+                    break
+
+        if not requested_metric and not direct_matched_col:
             return AnalysisPlan(
                 question=q_raw,
                 status=PlanStatus.UNANSWERABLE,
@@ -327,13 +365,15 @@ class DeterministicPlanner(PlannerBackend):
             )
 
         # ── 6. Check for Ambiguous Columns (Multiple Candidate Columns) ─────
-        # E.g., question says "sales", but table has both "sales" and "revenue"
         candidate_columns: list[ColumnRef] = []
-        for t in tables:
-            for c in t.column_names:
-                c_low = c.lower()
-                if requested_metric in c_low:
-                    candidate_columns.append(ColumnRef(table=t.table_name, column=c))
+        if direct_matched_col:
+            candidate_columns.append(direct_matched_col)
+        else:
+            for t in tables:
+                for c in t.column_names:
+                    c_low = c.lower()
+                    if requested_metric and requested_metric in c_low:
+                        candidate_columns.append(ColumnRef(table=t.table_name, column=c))
 
         # Check if question says "sales" and table has both "sales" and "revenue"
         if ("sales" in q_lower or "revenue" in q_lower) and len(tables) == 1:

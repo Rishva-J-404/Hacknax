@@ -7,13 +7,28 @@ export default function QuestionInput({
   onAnalyze,
   isLoading,
   hasData,
+  suggestions: dynamicSuggestions,
 }) {
-  const suggestions = [
+  const defaultSuggestions = [
     { label: 'Total order amount', query: 'Total order amount' },
     { label: 'Average order value', query: 'What is the average order amount?' },
     { label: 'Multi-world spread check', query: 'Total order amount across repair worlds' },
     { label: 'Customer churn rate (Unanswerable)', query: 'What was customer churn rate in 2024?' },
   ];
+
+  const rawSuggestions = dynamicSuggestions && dynamicSuggestions.length > 0
+    ? dynamicSuggestions
+    : defaultSuggestions;
+
+  const suggestions = rawSuggestions.map((s) => {
+    if (typeof s === 'string') {
+      return { label: s, query: s };
+    }
+    return {
+      label: s?.label || s?.query || '',
+      query: s?.query || s?.label || '',
+    };
+  }).filter((s) => s.label.trim().length > 0);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !isLoading) {
@@ -54,7 +69,7 @@ export default function QuestionInput({
             onClick={() => setQuestion(s.query)}
             type="button"
           >
-            "{s.label}"
+            {s.label}
           </button>
         ))}
       </div>

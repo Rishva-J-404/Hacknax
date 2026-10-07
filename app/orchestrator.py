@@ -50,7 +50,7 @@ from app.ingestion.loader import load_file
 from app.proof.builder import build_proof_card
 from app.proof.contracts import ProofCard
 from app.proof.serializer import save_proof_card
-from app.repair.contracts import RepairWorld
+from app.repair.contracts import RepairError, RepairWorld
 from app.repair.engine import RepairEngine
 from app.skeptic.agent import SkepticAgent
 from app.truth.contracts import TruthGateResult, TruthStatus
@@ -204,9 +204,20 @@ class ProofLensOrchestrator:
             )
 
         # ── STEP 6: Repair Worlds Generation ───────────────────────────────────
-        repair_worlds = self.repair_engine.create_worlds_from_ledger(
-            loaded_tables, ledger, parameters=repair_parameters
-        )
+        try:
+            repair_worlds = self.repair_engine.create_worlds_from_ledger(
+                loaded_tables, ledger, parameters=repair_parameters
+            )
+        except RepairError as err:
+            return self._handle_early_refusal(
+                question=question,
+                status=TruthStatus.UNANSWERABLE,
+                reason=f"Data repair impossible: {err.detail if hasattr(err, 'detail') else err}",
+                ledger=ledger,
+                plan=plan,
+                out_dir=out_dir,
+            )
+
         if not repair_worlds:
             repair_worlds = [
                 RepairWorld(
@@ -217,8 +228,31 @@ class ProofLensOrchestrator:
                 )
             ]
 
+        # Filter executable safe worlds (exclude impossible date/repair interpretations)
+        valid_worlds = [w for w in repair_worlds if w.is_safe]
+
+        if not valid_worlds:
+            # All candidate worlds were impossible / unparseable
+            reasons = []
+            for w in repair_worlds:
+                reasons.extend(w.safety_issues)
+            refusal_reason = (
+                "; ".join(reasons)
+                if reasons
+                else "All candidate repair worlds were impossible or unparseable for the data."
+            )
+            return self._handle_early_refusal(
+                question=question,
+                status=TruthStatus.UNANSWERABLE,
+                reason=refusal_reason,
+                ledger=ledger,
+                plan=plan,
+                worlds=repair_worlds,
+                out_dir=out_dir,
+            )
+
         # ── STEP 7: Code Generation ────────────────────────────────────────────
-        primary_world = repair_worlds[0]
+        primary_world = valid_worlds[0]
         gen_code_path = out_dir / f"analysis_{primary_world.world_id}.py"
         try:
             gen_code: GeneratedCode = generate_analysis_code(
@@ -282,8 +316,13 @@ class ProofLensOrchestrator:
         impact_analysis: ImpactAnalysis | None = None
         world_results: dict[str, Any] = {primary_world.world_id: primary_exec.result_value}
 
-        if len(repair_worlds) > 1:
-            for extra_world in repair_worlds[1:]:
+        # Track any impossible worlds as None in world_results
+        for w in repair_worlds:
+            if not w.is_safe and w.world_id not in world_results:
+                world_results[w.world_id] = None
+
+        if len(valid_worlds) > 1:
+            for extra_world in valid_worlds[1:]:
                 extra_exec = self.runner.run(
                     world=extra_world,
                     plan=plan,

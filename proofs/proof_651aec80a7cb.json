@@ -19,7 +19,7 @@
     "join_keys": [],
     "limit": null,
     "planner_notes": null,
-    "question": "Total order amount",
+    "question": "Total amount",
     "required_columns": [
       {
         "column": "amount",
@@ -41,14 +41,13 @@
     "Truth gate blocked answer publication."
   ],
   "claims": [],
-  "created_at": "2026-10-07T12:48:22.660120",
+  "created_at": "2026-10-07T12:49:00.996517",
   "data_quality_ledger": {
     "all_issues": [
       {
         "affected_columns": [
-          "order_id",
-          "amount",
-          "status"
+          "id",
+          "amount"
         ],
         "affected_source": "messy",
         "description": "1 exact duplicate rows detected in table 'messy'.",
@@ -62,13 +61,13 @@
       },
       {
         "affected_columns": [
-          "order_id"
+          "id"
         ],
         "affected_source": "messy",
-        "description": "Candidate key column 'order_id' in 'messy' contains 1 duplicate key values across 3 rows.",
+        "description": "Candidate key column 'id' in 'messy' contains 1 duplicate key values across 3 rows.",
         "evidence": {
           "duplicate_key_count": 1,
-          "key_column": "order_id",
+          "key_column": "id",
           "sample_duplicate_keys": [
             "1"
           ],
@@ -78,20 +77,19 @@
         "severity": "HIGH"
       }
     ],
-    "audit_timestamp": "2026-10-07T12:48:21.460460+00:00",
+    "audit_timestamp": "2026-10-07T12:49:00.039097+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
       {
-        "column_count": 3,
+        "column_count": 2,
         "column_names": [
-          "order_id",
-          "amount",
-          "status"
+          "id",
+          "amount"
         ],
         "column_profiles": [
           {
-            "column_name": "order_id",
+            "column_name": "id",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "numeric",
@@ -114,34 +112,19 @@
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "100.0",
-              "200.0"
+              "100",
+              "200"
             ],
             "total_count": 3,
             "unique_count": 2
-          },
-          {
-            "column_name": "status",
-            "detected_currencies": [],
-            "detected_units": [],
-            "inferred_type": "text",
-            "is_potential_key": false,
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "sample_values": [
-              "completed"
-            ],
-            "total_count": 3,
-            "unique_count": 1
           }
         ],
-        "dataset_sha256": "975029dd4a01f8f2771e44cf1e9973a46a1e0e83a0f2c6d353f0e9a3036a510d",
+        "dataset_sha256": "be7b3cb5eb8fbb698007d95309ca41962c5d26765b52e50009131f3f2c697c23",
         "issues": [
           {
             "affected_columns": [
-              "order_id",
-              "amount",
-              "status"
+              "id",
+              "amount"
             ],
             "affected_source": "messy",
             "description": "1 exact duplicate rows detected in table 'messy'.",
@@ -155,13 +138,13 @@
           },
           {
             "affected_columns": [
-              "order_id"
+              "id"
             ],
             "affected_source": "messy",
-            "description": "Candidate key column 'order_id' in 'messy' contains 1 duplicate key values across 3 rows.",
+            "description": "Candidate key column 'id' in 'messy' contains 1 duplicate key values across 3 rows.",
             "evidence": {
               "duplicate_key_count": 1,
-              "key_column": "order_id",
+              "key_column": "id",
               "sample_duplicate_keys": [
                 "1"
               ],
@@ -179,13 +162,13 @@
   "deterministic_decision": "BLOCKED",
   "draft_explanation": "I cannot provide a single numerical answer because multiple defensible interpretations exist in the data.\nDetails: Independent verification did not confirm the claim.",
   "execution_summary": {
-    "duration_seconds": 0.4984,
+    "duration_seconds": 0.4196,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
-    "generated_code_hash": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+    "generated_code_hash": "2312ea034b9d19f6fbd569e2e291e071e4d778dfc4411d9015a9794333dfd796",
     "input_data_hashes": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "messy": "dec0fc714d34c36d27ff21b32d9c6e97a9172adaeba0f8beb3d5bfacb3305e68"
     },
     "row_count_waterfall": {},
     "stderr": "",
@@ -193,10 +176,10 @@
   },
   "formatted_result": null,
   "hashes": {
-    "analysis_code_sha256": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
-    "canonical_proof_sha256": "ec5ff945c5b38cad0438d50f7ed8fc0e5a93e2b943a73728c41e3f4d4c021303",
+    "analysis_code_sha256": "2312ea034b9d19f6fbd569e2e291e071e4d778dfc4411d9015a9794333dfd796",
+    "canonical_proof_sha256": "651aec80a7cbc61d79a9f3ece2b1d05f01fb1823a0117f1a52e61ad90ca59205",
     "dataset_sha256": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "messy": "dec0fc714d34c36d27ff21b32d9c6e97a9172adaeba0f8beb3d5bfacb3305e68"
     },
     "policy_sha256": "7de04db0ddbb806556b35efd618d0e665e8671b09991f45fd7c4db9875bc4ca8"
   },
@@ -282,9 +265,9 @@
       "transformation": "None"
     }
   ],
-  "normalized_question": "Total order amount",
-  "proof_id": "proof_ec5ff945c5b3",
-  "question": "Total order amount",
+  "normalized_question": "Total amount",
+  "proof_id": "proof_651aec80a7cb",
+  "question": "Total amount",
   "refusal_reason": null,
   "relevant_period": null,
   "repair_worlds": [
@@ -316,40 +299,36 @@
       "repaired_tables": [
         {
           "column_names": [
-            "order_id",
-            "amount",
-            "status"
+            "id",
+            "amount"
           ],
           "dataframe": [
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
+              "amount": "100",
+              "id": "1"
             },
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
+              "amount": "100",
+              "id": "1"
             },
             {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
+              "amount": "200",
+              "id": "2"
             }
           ],
           "file_type": "CSV",
           "row_count": 3,
           "sheet_name": null,
-          "source_path": "data\\uploads\\1fd68d3689e0\\messy.csv",
+          "source_path": "data\\uploads\\806cbc9f275f\\messy.csv",
           "table_name": "messy"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\1fd68d3689e0\\messy.csv"
+        "data\\uploads\\806cbc9f275f\\messy.csv"
       ],
       "world_data_path": null,
-      "world_hash": "e60d01abd42b3ddc9b10eda2bcbf05343e53e9617b0423e1d825d6cc18dbd486",
+      "world_hash": "72abd6f2ab936f7e9c52748837505ac8906b01e13025fa0594c523105875b299",
       "world_id": "world_001"
     },
     {
@@ -380,43 +359,40 @@
       "repaired_tables": [
         {
           "column_names": [
-            "order_id",
-            "amount",
-            "status"
+            "id",
+            "amount"
           ],
           "dataframe": [
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
+              "amount": "100",
+              "id": "1"
             },
             {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
+              "amount": "200",
+              "id": "2"
             }
           ],
           "file_type": "CSV",
           "row_count": 2,
           "sheet_name": null,
-          "source_path": "data\\uploads\\1fd68d3689e0\\messy.csv",
+          "source_path": "data\\uploads\\806cbc9f275f\\messy.csv",
           "table_name": "messy"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\1fd68d3689e0\\messy.csv"
+        "data\\uploads\\806cbc9f275f\\messy.csv"
       ],
       "world_data_path": null,
-      "world_hash": "e60d01abd42b3ddc9b10eda2bcbf05343e53e9617b0423e1d825d6cc18dbd486",
+      "world_hash": "72abd6f2ab936f7e9c52748837505ac8906b01e13025fa0594c523105875b299",
       "world_id": "world_002"
     }
   ],
   "replay": {
-    "canonical_payload_sha256": "ec5ff945c5b38cad0438d50f7ed8fc0e5a93e2b943a73728c41e3f4d4c021303",
-    "code_sha256": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+    "canonical_payload_sha256": "651aec80a7cbc61d79a9f3ece2b1d05f01fb1823a0117f1a52e61ad90ca59205",
+    "code_sha256": "2312ea034b9d19f6fbd569e2e291e071e4d778dfc4411d9015a9794333dfd796",
     "dataset_sha256": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "messy": "dec0fc714d34c36d27ff21b32d9c6e97a9172adaeba0f8beb3d5bfacb3305e68"
     },
     "dependencies": {
       "duckdb": "1.5.6",
@@ -424,22 +400,22 @@
       "pydantic": "2.13.5"
     },
     "platform": "win32",
-    "proof_id": "proof_ec5ff945c5b3",
+    "proof_id": "proof_651aec80a7cb",
     "python_version": "3.11.9",
     "replay_executable": true,
-    "reproduction_command": "python scripts/replay.py proofs/proof_ec5ff945c5b3.json",
+    "reproduction_command": "python scripts/replay.py proofs/proof_651aec80a7cb.json",
     "tolerance": {
       "abs_tol": 1e-06,
       "rel_tol": 0.0001
     },
     "world_id": "world_001"
   },
-  "reproduction_command": "python scripts/replay.py proofs/proof_ec5ff945c5b3.json",
+  "reproduction_command": "python scripts/replay.py proofs/proof_651aec80a7cb.json",
   "result": null,
   "result_type": null,
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "1fd68d3689e0",
+  "session_id": "806cbc9f275f",
   "skeptic_review": null,
   "status": "AMBIGUOUS",
   "truth_gate_result": {
@@ -617,12 +593,12 @@
       "pandas_result": 400.0,
       "primary_result": 400.0,
       "provenance_details": {
-        "code_hash": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+        "code_hash": "2312ea034b9d19f6fbd569e2e291e071e4d778dfc4411d9015a9794333dfd796",
         "current_table_hashes": {
-          "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+          "messy": "dec0fc714d34c36d27ff21b32d9c6e97a9172adaeba0f8beb3d5bfacb3305e68"
         },
         "recorded_table_hashes": {
-          "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+          "messy": "dec0fc714d34c36d27ff21b32d9c6e97a9172adaeba0f8beb3d5bfacb3305e68"
         },
         "world_id": "world_001"
       },

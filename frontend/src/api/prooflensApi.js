@@ -66,8 +66,12 @@ export const prooflensApi = {
    * Upload user files (CSV, XLSX, JSON) and perform immediate deterministic audit.
    */
   async uploadFiles(files) {
+    const fileList = Array.from(files || []);
+    if (fileList.length === 0) {
+      throw new Error('Please select at least one file to upload.');
+    }
     const formData = new FormData();
-    for (const file of files) {
+    for (const file of fileList) {
       formData.append('files', file);
     }
 

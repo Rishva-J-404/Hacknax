@@ -6,14 +6,15 @@ export default function ResultCard({
   answer,
   status,
   proofId,
+  question,
   onViewProof,
   onViewCode,
   onReplay,
 }) {
   const formattedVal =
     typeof result === 'number'
-      ? `$${result.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })}`
-      : result;
+      ? result.toLocaleString(undefined, { maximumFractionDigits: 4 })
+      : (result !== null && result !== undefined ? String(result) : '—');
 
   return (
     <div className="result-card-container animate-fade-in">

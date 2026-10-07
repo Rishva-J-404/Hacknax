@@ -41,7 +41,7 @@
     "Truth gate blocked answer publication."
   ],
   "claims": [],
-  "created_at": "2026-10-07T11:13:08.962714",
+  "created_at": "2026-10-07T12:54:58.975523",
   "data_quality_ledger": {
     "all_issues": [
       {
@@ -78,7 +78,7 @@
         "severity": "HIGH"
       }
     ],
-    "audit_timestamp": "2026-10-07T11:13:07.712819+00:00",
+    "audit_timestamp": "2026-10-07T12:54:57.898577+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
@@ -179,7 +179,7 @@
   "deterministic_decision": "BLOCKED",
   "draft_explanation": "I cannot provide a single numerical answer because multiple defensible interpretations exist in the data.\nDetails: Independent verification did not confirm the claim.",
   "execution_summary": {
-    "duration_seconds": 0.5406,
+    "duration_seconds": 0.4599,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
@@ -340,13 +340,13 @@
           "file_type": "CSV",
           "row_count": 3,
           "sheet_name": null,
-          "source_path": "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv",
+          "source_path": "data\\uploads\\demo_messy_duplicates_00c20a\\messy_duplicates.csv",
           "table_name": "messy_duplicates"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv"
+        "data\\uploads\\demo_messy_duplicates_00c20a\\messy_duplicates.csv"
       ],
       "world_data_path": null,
       "world_hash": "ba02d904b4bcbfc4b5296850b944d4524521a1d25c0cbd21e91912ea137706ee",
@@ -399,13 +399,13 @@
           "file_type": "CSV",
           "row_count": 2,
           "sheet_name": null,
-          "source_path": "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv",
+          "source_path": "data\\uploads\\demo_messy_duplicates_00c20a\\messy_duplicates.csv",
           "table_name": "messy_duplicates"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv"
+        "data\\uploads\\demo_messy_duplicates_00c20a\\messy_duplicates.csv"
       ],
       "world_data_path": null,
       "world_hash": "ba02d904b4bcbfc4b5296850b944d4524521a1d25c0cbd21e91912ea137706ee",
@@ -439,7 +439,7 @@
   "result_type": null,
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "demo_messy_duplicates_20e7dd",
+  "session_id": "demo_messy_duplicates_00c20a",
   "skeptic_review": null,
   "status": "AMBIGUOUS",
   "truth_gate_result": {

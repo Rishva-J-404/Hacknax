@@ -347,7 +347,8 @@ def get_proof(proof_id: str) -> dict[str, Any]:
         card = load_proof_card(p)
         return card.model_dump(mode="json")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read proof card: {e}")
+        logger.exception("Failed to read proof card %s", proof_id)
+        raise HTTPException(status_code=500, detail="Failed to read the requested cryptographic proof card.")
 
 
 # ── 5. POST /api/replay/{proof_id} ─────────────────────────────────────────────
@@ -438,8 +439,12 @@ def load_sample_dataset(sample_id: str) -> UploadResponse:
     content = dest_path.read_bytes()
     file_sha256 = hashlib.sha256(content).hexdigest()
 
-    tbls = load_file(DataSourceRef(path=dest_path))
-    ledger = audit_tables(tbls)
+    try:
+        tbls = load_file(DataSourceRef(path=dest_path))
+        ledger = audit_tables(tbls)
+    except Exception as e:
+        logger.exception("Failed to ingest demo sample %s", sample_id)
+        raise HTTPException(status_code=400, detail=f"Failed to ingest demo sample '{sample.name}': {e}")
 
     metas = [
         UploadedFileMeta(
@@ -463,9 +468,6 @@ def load_sample_dataset(sample_id: str) -> UploadResponse:
 
 # ── 7. Static UI Files Mounting ────────────────────────────────────────────────
 FRONTEND_DIST = Path("frontend/dist")
-UI_DIR = Path("ui")
 if FRONTEND_DIST.exists():
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")
-elif UI_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(UI_DIR), html=True), name="ui")
 

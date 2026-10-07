@@ -10,7 +10,7 @@
     "join_keys": [],
     "limit": null,
     "planner_notes": null,
-    "question": "What was customer churn rate in 2024?",
+    "question": "Total qty",
     "required_columns": [],
     "required_tables": [],
     "sort_ascending": true,
@@ -25,7 +25,7 @@
     "Question asks for 'score', but no matching column was found."
   ],
   "claims": [],
-  "created_at": "2026-10-07T11:35:48.336778",
+  "created_at": "2026-10-07T12:38:48.816503",
   "data_quality_ledger": {
     "all_issues": [
       {
@@ -172,7 +172,7 @@
         "severity": "CRITICAL"
       }
     ],
-    "audit_timestamp": "2026-10-07T11:35:48.336778+00:00",
+    "audit_timestamp": "2026-10-07T12:38:48.815503+00:00",
     "has_critical_issues": true,
     "session_id": null,
     "table_profiles": [
@@ -464,7 +464,7 @@
   "formatted_result": null,
   "hashes": {
     "analysis_code_sha256": null,
-    "canonical_proof_sha256": "49b89ec6edfef49be68cef6cc15f4d281993a90842f21e4698728861dc561900",
+    "canonical_proof_sha256": "2fe5506cbac588d3076ae2e9a8dc1468a16440276d7a7b60d409e559abe641d7",
     "dataset_sha256": {
       "orders": "b4dbb5099aba73d3c11f8946678754715f0ab6b23620d390ef69e9d9ae4b3a81"
     },
@@ -483,14 +483,14 @@
     "transformations": []
   },
   "metamorphic_summary": [],
-  "normalized_question": "What was customer churn rate in 2024?",
-  "proof_id": "proof_49b89ec6edfe",
-  "question": "What was customer churn rate in 2024?",
+  "normalized_question": "Total qty",
+  "proof_id": "proof_2fe5506cbac5",
+  "question": "Total qty",
   "refusal_reason": null,
-  "relevant_period": "2024",
+  "relevant_period": null,
   "repair_worlds": [],
   "replay": {
-    "canonical_payload_sha256": "49b89ec6edfef49be68cef6cc15f4d281993a90842f21e4698728861dc561900",
+    "canonical_payload_sha256": "2fe5506cbac588d3076ae2e9a8dc1468a16440276d7a7b60d409e559abe641d7",
     "code_sha256": null,
     "dataset_sha256": {
       "orders": "b4dbb5099aba73d3c11f8946678754715f0ab6b23620d390ef69e9d9ae4b3a81"
@@ -501,17 +501,17 @@
       "pydantic": "2.13.5"
     },
     "platform": "win32",
-    "proof_id": "proof_49b89ec6edfe",
+    "proof_id": "proof_2fe5506cbac5",
     "python_version": "3.11.9",
     "replay_executable": false,
-    "reproduction_command": "python scripts/replay.py proofs/proof_49b89ec6edfe.json",
+    "reproduction_command": "python scripts/replay.py proofs/proof_2fe5506cbac5.json",
     "tolerance": {
       "abs_tol": 1e-06,
       "rel_tol": 0.0001
     },
     "world_id": "unanswerable_world"
   },
-  "reproduction_command": "python scripts/replay.py proofs/proof_49b89ec6edfe.json",
+  "reproduction_command": "python scripts/replay.py proofs/proof_2fe5506cbac5.json",
   "result": null,
   "result_type": null,
   "result_unit": null,

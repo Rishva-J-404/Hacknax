@@ -12,6 +12,19 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+
+# Automatically delegate to project .venv python if running from global python
+_script_dir = Path(__file__).resolve().parent
+_venv_python_win = _script_dir / ".venv" / "Scripts" / "python.exe"
+_venv_python_posix = _script_dir / ".venv" / "bin" / "python"
+_target_python = _venv_python_win if _venv_python_win.exists() else (_venv_python_posix if _venv_python_posix.exists() else None)
+
+if _target_python and Path(sys.executable).resolve() != _target_python.resolve():
+    try:
+        import uvicorn
+    except ImportError:
+        sys.exit(subprocess.call([str(_target_python)] + sys.argv))
+
 import uvicorn
 
 # Configure stdout for Unicode compatibility on Windows
@@ -97,7 +110,7 @@ def main():
 
     try:
         print("  [*] Starting FastAPI verification engine (port 8000)...\n")
-        uvicorn.run("app.api.server:app", host="127.0.0.1", port=8000, reload=False)
+        uvicorn.run("app.api.server:app", host="127.0.0.1", port=8000, reload=True)
     finally:
         kill_frontend()
 

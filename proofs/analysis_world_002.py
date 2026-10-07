@@ -9,11 +9,11 @@ import pandas as pd
 
 # ── 1. Load Data ──────────────────────────────────────────────────────────
 # Expects 'tables' dictionary of DataFrames or Loads from current environment
-df = tables['messy_duplicates'].copy()
+df = tables['dates_02_17'].copy()
 
 # ── 2. Schema Assertions ──────────────────────────────────────────────────
 assert len(df) > 0, 'Input dataset must not be empty'
-assert 'amount' in df.columns, 'Required column "amount" is missing from table "messy_duplicates"'
+assert 'amount' in df.columns, 'Required column "amount" is missing from table "dates_02_17"'
 
 # ── 5. Deterministic Computation ──────────────────────────────────────────
 numeric_series = pd.to_numeric(df['amount'], errors='coerce').dropna()

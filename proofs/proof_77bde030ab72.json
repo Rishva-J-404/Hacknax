@@ -3,14 +3,14 @@
   "analysis_plan": {
     "aggregation": {
       "column": {
-        "column": "amount",
-        "table": "orders"
+        "column": "Total Salary",
+        "table": "employee-data 2026"
       },
       "operation": "sum",
       "unit": null
     },
     "ambiguity_flags": [],
-    "analysis_intent": "SUM_AMOUNT",
+    "analysis_intent": "SUM_TOTAL SALARY",
     "assumptions": [
       "Calculated over all valid matching rows."
     ],
@@ -19,15 +19,15 @@
     "join_keys": [],
     "limit": null,
     "planner_notes": null,
-    "question": "Total order amount",
+    "question": "What is the Total Salary?",
     "required_columns": [
       {
-        "column": "amount",
-        "table": "orders"
+        "column": "Total Salary",
+        "table": "employee-data 2026"
       }
     ],
     "required_tables": [
-      "orders"
+      "employee-data 2026"
     ],
     "sort_ascending": true,
     "sort_by": null,
@@ -40,18 +40,18 @@
   "blocking_reasons": [],
   "claims": [
     {
-      "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+      "claim_text": "Based on verified data analysis, the result for 'What is the Total Salary?' is 360000.0.",
       "claim_type": "NUMERICAL_VALUE",
       "evidence_refs": [
         {
           "evidence_type": "execution_stdout",
           "reference": "world_world_001 authoritative execution result",
-          "value": "600.0"
+          "value": "360000.0"
         },
         {
           "evidence_type": "duckdb_result",
           "reference": "independent DuckDB SQL calculation",
-          "value": "600.0"
+          "value": "360000.0"
         },
         {
           "evidence_type": "verification_check",
@@ -60,37 +60,37 @@
         },
         {
           "evidence_type": "lineage",
-          "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-          "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+          "reference": "analysis code SHA-256: a2ab8ad947fa6ba6...",
+          "value": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14"
         }
       ],
       "mismatch_reason": null,
-      "normalized_value": 600.0,
-      "numerical_value": 600.0,
+      "normalized_value": 360000.0,
+      "numerical_value": 360000.0,
       "relevant_period": null,
       "status": "VERIFIED",
-      "subject": "amount",
+      "subject": null,
       "supported": true,
       "unit": null
     }
   ],
-  "created_at": "2026-10-07T12:48:21.432214",
+  "created_at": "2026-10-07T12:48:24.152398",
   "data_quality_ledger": {
     "all_issues": [],
-    "audit_timestamp": "2026-10-07T12:48:20.753244+00:00",
+    "audit_timestamp": "2026-10-07T12:48:23.444545+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
       {
         "column_count": 3,
         "column_names": [
-          "order_id",
-          "amount",
-          "status"
+          "Employee ID",
+          "Department",
+          "Total Salary"
         ],
         "column_profiles": [
           {
-            "column_name": "order_id",
+            "column_name": "Employee ID",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "numeric",
@@ -98,115 +98,117 @@
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "1",
-              "2",
-              "3"
+              "101",
+              "102",
+              "103"
             ],
             "total_count": 3,
             "unique_count": 3
           },
           {
-            "column_name": "amount",
-            "detected_currencies": [],
-            "detected_units": [],
-            "inferred_type": "numeric",
-            "is_potential_key": true,
-            "missing_count": 0,
-            "missing_pct": 0.0,
-            "sample_values": [
-              "100.0",
-              "200.0",
-              "300.0"
-            ],
-            "total_count": 3,
-            "unique_count": 3
-          },
-          {
-            "column_name": "status",
+            "column_name": "Department",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "text",
-            "is_potential_key": false,
+            "is_potential_key": true,
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "completed"
+              "Design",
+              "Engineering",
+              "Product"
             ],
             "total_count": 3,
-            "unique_count": 1
+            "unique_count": 3
+          },
+          {
+            "column_name": "Total Salary",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "120000",
+              "150000",
+              "90000"
+            ],
+            "total_count": 3,
+            "unique_count": 3
           }
         ],
-        "dataset_sha256": "50ec8be5075260f77b97ea64732285564fb3ce72e5855c3a52b77a5907976465",
+        "dataset_sha256": "df6269e2d2f0c3d3a9a4e1eb1ec081b0b25036eb5b1065734a85771bc517b9b8",
         "issues": [],
         "row_count": 3,
-        "source": "orders"
+        "source": "employee-data 2026"
       }
     ]
   },
   "deterministic_decision": "PERMITTED",
-  "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+  "draft_explanation": "Based on verified data analysis, the result for 'What is the Total Salary?' is 360000.0.",
   "execution_summary": {
-    "duration_seconds": 0.5141,
+    "duration_seconds": 0.4852,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
-    "generated_code_hash": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+    "generated_code_hash": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14",
     "input_data_hashes": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "employee-data 2026": "76f88a8ee0bbf54bad15b9af6729ee52811487fafc57139ba19bb41f8802ad65"
     },
     "row_count_waterfall": {},
     "stderr": "",
-    "stdout": "600.0\n"
+    "stdout": "360000.0\n"
   },
-  "formatted_result": "600.0",
+  "formatted_result": "360000.0",
   "hashes": {
-    "analysis_code_sha256": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
-    "canonical_proof_sha256": "b54eec1638e72b4f512d2be025ba13c012e3cb7189b6481100e25574f57433d9",
+    "analysis_code_sha256": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14",
+    "canonical_proof_sha256": "77bde030ab7293354fdf63e99981041bb510a87b9be01b6844f73f4d43e2f6fd",
     "dataset_sha256": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "employee-data 2026": "76f88a8ee0bbf54bad15b9af6729ee52811487fafc57139ba19bb41f8802ad65"
     },
     "policy_sha256": "fa07ec4d8535f106a25ed947e2aea88a41c2d103298d4eb205cfa19b22476c53"
   },
   "impact_range": {},
   "lineage": {
     "columns_used": [
-      "orders.amount"
+      "employee-data 2026.Total Salary"
     ],
     "filters_applied": [],
     "joins_performed": [],
     "repair_policy_summary": "DUPLICATE_ROWS: KEEP",
     "source_files": [
-      "orders"
+      "employee-data 2026"
     ],
     "tables_used": [
-      "orders"
+      "employee-data 2026"
     ],
     "transformations": [
-      "SUM(orders.amount)"
+      "SUM(employee-data 2026.Total Salary)"
     ]
   },
   "metamorphic_summary": [
     {
-      "expected": "600.0",
+      "expected": "360000.0",
       "name": "METAMORPHIC_ROW_SHUFFLE",
-      "observed": "600.0",
+      "observed": "360000.0",
       "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Reversed rows (iloc[::-1]) on all input tables."
     },
     {
-      "expected": "700.0",
+      "expected": "510000.0",
       "name": "METAMORPHIC_DUPLICATE_INJECTION",
-      "observed": "700.0",
+      "observed": "510000.0",
       "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended clone of row 0 to main table."
     },
     {
-      "expected": "600.0",
+      "expected": "360000.0",
       "name": "METAMORPHIC_ADD_ZERO",
-      "observed": "600.0",
-      "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "observed": "360000.0",
+      "reason": "Added row with Total Salary=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended synthetic row with 0.0 metric value."
     },
@@ -219,10 +221,10 @@
       "transformation": "None"
     },
     {
-      "expected": "<= 600.0",
+      "expected": "<= 360000.0",
       "name": "METAMORPHIC_FILTER_MONOTONICITY",
-      "observed": "100.0",
-      "reason": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
+      "observed": "150000.0",
+      "reason": "Subset (first 1 rows) resulted in 150000.0 <= 360000.0",
       "status": "PASS",
       "transformation": "Restricted dataset to first half of rows."
     },
@@ -243,9 +245,9 @@
       "transformation": "None"
     }
   ],
-  "normalized_question": "Total order amount",
-  "proof_id": "proof_b54eec1638e7",
-  "question": "Total order amount",
+  "normalized_question": "What is the Total Salary?",
+  "proof_id": "proof_77bde030ab72",
+  "question": "What is the Total Salary?",
   "refusal_reason": null,
   "relevant_period": null,
   "repair_worlds": [
@@ -271,54 +273,54 @@
           "reason": "Duplicate policy: KEEP (all rows preserved including duplicates)",
           "rows_after": 3,
           "rows_before": 3,
-          "table": "orders"
+          "table": "employee-data 2026"
         }
       ],
       "repaired_tables": [
         {
           "column_names": [
-            "order_id",
-            "amount",
-            "status"
+            "Employee ID",
+            "Department",
+            "Total Salary"
           ],
           "dataframe": [
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
+              "Department": "Engineering",
+              "Employee ID": "101",
+              "Total Salary": "150000"
             },
             {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
+              "Department": "Product",
+              "Employee ID": "102",
+              "Total Salary": "120000"
             },
             {
-              "amount": "300.0",
-              "order_id": "3",
-              "status": "completed"
+              "Department": "Design",
+              "Employee ID": "103",
+              "Total Salary": "90000"
             }
           ],
           "file_type": "CSV",
           "row_count": 3,
           "sheet_name": null,
-          "source_path": "data\\uploads\\0599304ac647\\orders.csv",
-          "table_name": "orders"
+          "source_path": "data\\uploads\\734a41f4946a\\employee-data 2026.csv",
+          "table_name": "employee-data 2026"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\0599304ac647\\orders.csv"
+        "data\\uploads\\734a41f4946a\\employee-data 2026.csv"
       ],
       "world_data_path": null,
-      "world_hash": "a64308f7c80264ea440884955ca4a27a0c9b208e910cf9663fa270b23fb90914",
+      "world_hash": "99a65d69da3dfa64ae8034a4c47ab535de876d6759b42fc41c5f570aaab1c3fb",
       "world_id": "world_001"
     }
   ],
   "replay": {
-    "canonical_payload_sha256": "b54eec1638e72b4f512d2be025ba13c012e3cb7189b6481100e25574f57433d9",
-    "code_sha256": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+    "canonical_payload_sha256": "77bde030ab7293354fdf63e99981041bb510a87b9be01b6844f73f4d43e2f6fd",
+    "code_sha256": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14",
     "dataset_sha256": {
-      "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+      "employee-data 2026": "76f88a8ee0bbf54bad15b9af6729ee52811487fafc57139ba19bb41f8802ad65"
     },
     "dependencies": {
       "duckdb": "1.5.6",
@@ -326,22 +328,22 @@
       "pydantic": "2.13.5"
     },
     "platform": "win32",
-    "proof_id": "proof_b54eec1638e7",
+    "proof_id": "proof_77bde030ab72",
     "python_version": "3.11.9",
     "replay_executable": true,
-    "reproduction_command": "python scripts/replay.py proofs/proof_b54eec1638e7.json",
+    "reproduction_command": "python scripts/replay.py proofs/proof_77bde030ab72.json",
     "tolerance": {
       "abs_tol": 1e-06,
       "rel_tol": 0.0001
     },
     "world_id": "world_001"
   },
-  "reproduction_command": "python scripts/replay.py proofs/proof_b54eec1638e7.json",
-  "result": 600.0,
+  "reproduction_command": "python scripts/replay.py proofs/proof_77bde030ab72.json",
+  "result": 360000.0,
   "result_type": "float",
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "0599304ac647",
+  "session_id": "734a41f4946a",
   "skeptic_review": {
     "concerns": [],
     "has_blocking_concerns": false,
@@ -354,18 +356,18 @@
     "blocking_reasons": [],
     "claims": [
       {
-        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_text": "Based on verified data analysis, the result for 'What is the Total Salary?' is 360000.0.",
         "claim_type": "NUMERICAL_VALUE",
         "evidence_refs": [
           {
             "evidence_type": "execution_stdout",
             "reference": "world_world_001 authoritative execution result",
-            "value": "600.0"
+            "value": "360000.0"
           },
           {
             "evidence_type": "duckdb_result",
             "reference": "independent DuckDB SQL calculation",
-            "value": "600.0"
+            "value": "360000.0"
           },
           {
             "evidence_type": "verification_check",
@@ -374,16 +376,16 @@
           },
           {
             "evidence_type": "lineage",
-            "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-            "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+            "reference": "analysis code SHA-256: a2ab8ad947fa6ba6...",
+            "value": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14"
           }
         ],
         "mismatch_reason": null,
-        "normalized_value": 600.0,
-        "numerical_value": 600.0,
+        "normalized_value": 360000.0,
+        "numerical_value": 360000.0,
         "relevant_period": null,
         "status": "VERIFIED",
-        "subject": "amount",
+        "subject": null,
         "supported": true,
         "unit": null
       }
@@ -393,12 +395,12 @@
       {
         "evidence_type": "execution_stdout",
         "reference": "world_world_001 authoritative execution result",
-        "value": "600.0"
+        "value": "360000.0"
       },
       {
         "evidence_type": "duckdb_result",
         "reference": "independent DuckDB SQL calculation",
-        "value": "600.0"
+        "value": "360000.0"
       },
       {
         "evidence_type": "verification_check",
@@ -407,8 +409,8 @@
       },
       {
         "evidence_type": "lineage",
-        "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-        "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+        "reference": "analysis code SHA-256: a2ab8ad947fa6ba6...",
+        "value": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14"
       }
     ],
     "failed_claims": [],
@@ -421,18 +423,18 @@
     "unsupported_claims": [],
     "verified_claims": [
       {
-        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_text": "Based on verified data analysis, the result for 'What is the Total Salary?' is 360000.0.",
         "claim_type": "NUMERICAL_VALUE",
         "evidence_refs": [
           {
             "evidence_type": "execution_stdout",
             "reference": "world_world_001 authoritative execution result",
-            "value": "600.0"
+            "value": "360000.0"
           },
           {
             "evidence_type": "duckdb_result",
             "reference": "independent DuckDB SQL calculation",
-            "value": "600.0"
+            "value": "360000.0"
           },
           {
             "evidence_type": "verification_check",
@@ -441,16 +443,16 @@
           },
           {
             "evidence_type": "lineage",
-            "reference": "analysis code SHA-256: 1f63edc02ea4f3ea...",
-            "value": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd"
+            "reference": "analysis code SHA-256: a2ab8ad947fa6ba6...",
+            "value": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14"
           }
         ],
         "mismatch_reason": null,
-        "normalized_value": 600.0,
-        "numerical_value": 600.0,
+        "normalized_value": 360000.0,
+        "numerical_value": 360000.0,
         "relevant_period": null,
         "status": "VERIFIED",
-        "subject": "amount",
+        "subject": null,
         "supported": true,
         "unit": null
       }
@@ -460,7 +462,7 @@
     {
       "checks": [
         {
-          "actual": "600.0",
+          "actual": "360000.0",
           "check": "PANDAS_PRIMARY",
           "detail": "Primary execution succeeded and emitted authoritative result.",
           "expected": null,
@@ -481,38 +483,38 @@
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "360000.0",
           "check": "DUCKDB_SECONDARY",
           "detail": "Independent DuckDB query executed successfully.",
           "expected": null,
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "360000.0",
           "check": "MATCH_CHECK",
           "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "360000.0",
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "360000.0",
           "check": "METAMORPHIC_ROW_SHUFFLE",
           "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "360000.0",
           "outcome": "PASS"
         },
         {
-          "actual": "700.0",
+          "actual": "510000.0",
           "check": "METAMORPHIC_DUPLICATE_INJECTION",
           "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "700.0",
+          "expected": "510000.0",
           "outcome": "PASS"
         },
         {
-          "actual": "600.0",
+          "actual": "360000.0",
           "check": "METAMORPHIC_ADD_ZERO",
-          "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "detail": "Added row with Total Salary=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "360000.0",
           "outcome": "PASS"
         },
         {
@@ -523,10 +525,10 @@
           "outcome": "SKIPPED"
         },
         {
-          "actual": "100.0",
+          "actual": "150000.0",
           "check": "METAMORPHIC_FILTER_MONOTONICITY",
-          "detail": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
-          "expected": "<= 600.0",
+          "detail": "Subset (first 1 rows) resulted in 150000.0 <= 360000.0",
+          "expected": "<= 360000.0",
           "outcome": "PASS"
         },
         {
@@ -544,35 +546,35 @@
           "outcome": "SKIPPED"
         }
       ],
-      "duckdb_result": 600.0,
+      "duckdb_result": 360000.0,
       "failures": [],
       "impact": null,
-      "independent_result": 600.0,
+      "independent_result": 360000.0,
       "metamorphic_results": [
         {
           "applicable": true,
           "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "expected": "360000.0",
           "name": "METAMORPHIC_ROW_SHUFFLE",
-          "observed": "600.0",
+          "observed": "360000.0",
           "status": "PASS",
           "transformation": "Reversed rows (iloc[::-1]) on all input tables."
         },
         {
           "applicable": true,
           "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "700.0",
+          "expected": "510000.0",
           "name": "METAMORPHIC_DUPLICATE_INJECTION",
-          "observed": "700.0",
+          "observed": "510000.0",
           "status": "PASS",
           "transformation": "Appended clone of row 0 to main table."
         },
         {
           "applicable": true,
-          "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "600.0",
+          "details": "Added row with Total Salary=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "360000.0",
           "name": "METAMORPHIC_ADD_ZERO",
-          "observed": "600.0",
+          "observed": "360000.0",
           "status": "PASS",
           "transformation": "Appended synthetic row with 0.0 metric value."
         },
@@ -587,10 +589,10 @@
         },
         {
           "applicable": true,
-          "details": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
-          "expected": "<= 600.0",
+          "details": "Subset (first 1 rows) resulted in 150000.0 <= 360000.0",
+          "expected": "<= 360000.0",
           "name": "METAMORPHIC_FILTER_MONOTONICITY",
-          "observed": "100.0",
+          "observed": "150000.0",
           "status": "PASS",
           "transformation": "Restricted dataset to first half of rows."
         },
@@ -613,15 +615,15 @@
           "transformation": "None"
         }
       ],
-      "pandas_result": 600.0,
-      "primary_result": 600.0,
+      "pandas_result": 360000.0,
+      "primary_result": 360000.0,
       "provenance_details": {
-        "code_hash": "1f63edc02ea4f3eabb4ef0a7144402675c160dffa4f7aac76726e07e74df9ddd",
+        "code_hash": "a2ab8ad947fa6ba648447e0dc4f455d8a952a87dc303412e82dd00d4ab522d14",
         "current_table_hashes": {
-          "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+          "employee-data 2026": "76f88a8ee0bbf54bad15b9af6729ee52811487fafc57139ba19bb41f8802ad65"
         },
         "recorded_table_hashes": {
-          "orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+          "employee-data 2026": "76f88a8ee0bbf54bad15b9af6729ee52811487fafc57139ba19bb41f8802ad65"
         },
         "world_id": "world_001"
       },

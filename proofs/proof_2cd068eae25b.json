@@ -4,7 +4,7 @@
     "aggregation": {
       "column": {
         "column": "amount",
-        "table": "messy"
+        "table": "dates_bad"
       },
       "operation": "sum",
       "unit": null
@@ -23,11 +23,11 @@
     "required_columns": [
       {
         "column": "amount",
-        "table": "messy"
+        "table": "dates_bad"
       }
     ],
     "required_tables": [
-      "messy"
+      "dates_bad"
     ],
     "sort_ascending": true,
     "sort_by": null,
@@ -35,50 +35,49 @@
     "unanswerable_evidence": null,
     "unanswerable_reason": null
   },
-  "answer_blocked": true,
+  "answer_blocked": false,
   "assumptions": [],
-  "blocking_reasons": [
-    "Truth gate blocked answer publication."
+  "blocking_reasons": [],
+  "claims": [
+    {
+      "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 150.0.",
+      "claim_type": "NUMERICAL_VALUE",
+      "evidence_refs": [
+        {
+          "evidence_type": "execution_stdout",
+          "reference": "world_world_001 authoritative execution result",
+          "value": "150.0"
+        },
+        {
+          "evidence_type": "duckdb_result",
+          "reference": "independent DuckDB SQL calculation",
+          "value": "150.0"
+        },
+        {
+          "evidence_type": "verification_check",
+          "reference": "dual-path MATCH_CHECK",
+          "value": "PASS"
+        },
+        {
+          "evidence_type": "lineage",
+          "reference": "analysis code SHA-256: 4865fa07440dc8a6...",
+          "value": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a"
+        }
+      ],
+      "mismatch_reason": null,
+      "normalized_value": 150.0,
+      "numerical_value": 150.0,
+      "relevant_period": null,
+      "status": "VERIFIED",
+      "subject": "amount",
+      "supported": true,
+      "unit": null
+    }
   ],
-  "claims": [],
-  "created_at": "2026-10-07T12:48:22.660120",
+  "created_at": "2026-10-07T12:15:11.957613",
   "data_quality_ledger": {
-    "all_issues": [
-      {
-        "affected_columns": [
-          "order_id",
-          "amount",
-          "status"
-        ],
-        "affected_source": "messy",
-        "description": "1 exact duplicate rows detected in table 'messy'.",
-        "evidence": {
-          "duplicate_row_count": 1,
-          "original_row_count": 3,
-          "unique_row_count": 2
-        },
-        "issue_type": "DUPLICATE_ROWS",
-        "severity": "HIGH"
-      },
-      {
-        "affected_columns": [
-          "order_id"
-        ],
-        "affected_source": "messy",
-        "description": "Candidate key column 'order_id' in 'messy' contains 1 duplicate key values across 3 rows.",
-        "evidence": {
-          "duplicate_key_count": 1,
-          "key_column": "order_id",
-          "sample_duplicate_keys": [
-            "1"
-          ],
-          "unique_keys": 2
-        },
-        "issue_type": "DUPLICATE_KEYS",
-        "severity": "HIGH"
-      }
-    ],
-    "audit_timestamp": "2026-10-07T12:48:21.460460+00:00",
+    "all_issues": [],
+    "audit_timestamp": "2026-10-07T12:15:11.301593+00:00",
     "has_critical_issues": false,
     "session_id": null,
     "table_profiles": [
@@ -87,7 +86,7 @@
         "column_names": [
           "order_id",
           "amount",
-          "status"
+          "date"
         ],
         "column_profiles": [
           {
@@ -99,152 +98,110 @@
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "1",
-              "2"
+              "1"
             ],
-            "total_count": 3,
-            "unique_count": 2
+            "total_count": 1,
+            "unique_count": 1
           },
           {
             "column_name": "amount",
             "detected_currencies": [],
             "detected_units": [],
             "inferred_type": "numeric",
-            "is_potential_key": false,
+            "is_potential_key": true,
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "100.0",
-              "200.0"
+              "150.0"
             ],
-            "total_count": 3,
-            "unique_count": 2
+            "total_count": 1,
+            "unique_count": 1
           },
           {
-            "column_name": "status",
+            "column_name": "date",
             "detected_currencies": [],
             "detected_units": [],
-            "inferred_type": "text",
-            "is_potential_key": false,
+            "inferred_type": "date",
+            "is_potential_key": true,
             "missing_count": 0,
             "missing_pct": 0.0,
             "sample_values": [
-              "completed"
+              "99/99/9999"
             ],
-            "total_count": 3,
+            "total_count": 1,
             "unique_count": 1
           }
         ],
-        "dataset_sha256": "975029dd4a01f8f2771e44cf1e9973a46a1e0e83a0f2c6d353f0e9a3036a510d",
-        "issues": [
-          {
-            "affected_columns": [
-              "order_id",
-              "amount",
-              "status"
-            ],
-            "affected_source": "messy",
-            "description": "1 exact duplicate rows detected in table 'messy'.",
-            "evidence": {
-              "duplicate_row_count": 1,
-              "original_row_count": 3,
-              "unique_row_count": 2
-            },
-            "issue_type": "DUPLICATE_ROWS",
-            "severity": "HIGH"
-          },
-          {
-            "affected_columns": [
-              "order_id"
-            ],
-            "affected_source": "messy",
-            "description": "Candidate key column 'order_id' in 'messy' contains 1 duplicate key values across 3 rows.",
-            "evidence": {
-              "duplicate_key_count": 1,
-              "key_column": "order_id",
-              "sample_duplicate_keys": [
-                "1"
-              ],
-              "unique_keys": 2
-            },
-            "issue_type": "DUPLICATE_KEYS",
-            "severity": "HIGH"
-          }
-        ],
-        "row_count": 3,
-        "source": "messy"
+        "dataset_sha256": "3b89769d0c9e9d5a97bd181df79024a8e578534568dcb162c9d44ca3ad7327ec",
+        "issues": [],
+        "row_count": 1,
+        "source": "dates_bad"
       }
     ]
   },
-  "deterministic_decision": "BLOCKED",
-  "draft_explanation": "I cannot provide a single numerical answer because multiple defensible interpretations exist in the data.\nDetails: Independent verification did not confirm the claim.",
+  "deterministic_decision": "PERMITTED",
+  "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 150.0.",
   "execution_summary": {
-    "duration_seconds": 0.4984,
+    "duration_seconds": 0.5145,
     "execution_error": null,
     "execution_success": true,
     "exit_code": 0,
-    "generated_code_hash": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+    "generated_code_hash": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a",
     "input_data_hashes": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "dates_bad": "151fed0e875655e3c1e5a5deb6619f52ca1bdbc20fb24faf5b15a34aaba6745c"
     },
     "row_count_waterfall": {},
     "stderr": "",
-    "stdout": "400.0\n"
+    "stdout": "150.0\n"
   },
-  "formatted_result": null,
+  "formatted_result": "150.0",
   "hashes": {
-    "analysis_code_sha256": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
-    "canonical_proof_sha256": "ec5ff945c5b38cad0438d50f7ed8fc0e5a93e2b943a73728c41e3f4d4c021303",
+    "analysis_code_sha256": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a",
+    "canonical_proof_sha256": "2cd068eae25b623830fcef9d21dfdedde4abba41fa5166d51f395c73d24c8cde",
     "dataset_sha256": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "dates_bad": "151fed0e875655e3c1e5a5deb6619f52ca1bdbc20fb24faf5b15a34aaba6745c"
     },
-    "policy_sha256": "7de04db0ddbb806556b35efd618d0e665e8671b09991f45fd7c4db9875bc4ca8"
+    "policy_sha256": "fa07ec4d8535f106a25ed947e2aea88a41c2d103298d4eb205cfa19b22476c53"
   },
-  "impact_range": {
-    "decision_stable": 0.0,
-    "maximum": 400.0,
-    "minimum": 300.0,
-    "spread": 100.0,
-    "value_stable": 0.0
-  },
+  "impact_range": {},
   "lineage": {
     "columns_used": [
-      "messy.amount"
+      "dates_bad.amount"
     ],
     "filters_applied": [],
     "joins_performed": [],
-    "repair_policy_summary": "DUPLICATE_ROWS: KEEP; DUPLICATE_ROWS: EXACT_DEDUP",
+    "repair_policy_summary": "DUPLICATE_ROWS: KEEP",
     "source_files": [
-      "messy"
+      "dates_bad"
     ],
     "tables_used": [
-      "messy"
+      "dates_bad"
     ],
     "transformations": [
-      "SUM(messy.amount)"
+      "SUM(dates_bad.amount)"
     ]
   },
   "metamorphic_summary": [
     {
-      "expected": "400.0",
+      "expected": "150.0",
       "name": "METAMORPHIC_ROW_SHUFFLE",
-      "observed": "400.0",
+      "observed": "150.0",
       "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Reversed rows (iloc[::-1]) on all input tables."
     },
     {
-      "expected": "500.0",
+      "expected": "300.0",
       "name": "METAMORPHIC_DUPLICATE_INJECTION",
-      "observed": "500.0",
+      "observed": "300.0",
       "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended clone of row 0 to main table."
     },
     {
-      "expected": "400.0",
+      "expected": "150.0",
       "name": "METAMORPHIC_ADD_ZERO",
-      "observed": "400.0",
+      "observed": "150.0",
       "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
       "status": "PASS",
       "transformation": "Appended synthetic row with 0.0 metric value."
@@ -258,10 +215,10 @@
       "transformation": "None"
     },
     {
-      "expected": "<= 400.0",
+      "expected": "<= 150.0",
       "name": "METAMORPHIC_FILTER_MONOTONICITY",
-      "observed": "100.0",
-      "reason": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
+      "observed": "150.0",
+      "reason": "Subset (first 1 rows) resulted in 150.0 <= 150.0",
       "status": "PASS",
       "transformation": "Restricted dataset to first half of rows."
     },
@@ -283,7 +240,7 @@
     }
   ],
   "normalized_question": "Total order amount",
-  "proof_id": "proof_ec5ff945c5b3",
+  "proof_id": "proof_2cd068eae25b",
   "question": "Total order amount",
   "refusal_reason": null,
   "relevant_period": null,
@@ -297,7 +254,7 @@
           "affected_sources": [],
           "issue_type": "DUPLICATE_ROWS",
           "parameters": {},
-          "rationale": "World branch: KEEP duplicates",
+          "rationale": "Data audit clean; using original data as World 1 baseline.",
           "selected_action": "KEEP"
         }
       ],
@@ -308,9 +265,9 @@
           "details": {},
           "operation": "KEEP",
           "reason": "Duplicate policy: KEEP (all rows preserved including duplicates)",
-          "rows_after": 3,
-          "rows_before": 3,
-          "table": "messy"
+          "rows_after": 1,
+          "rows_before": 1,
+          "table": "dates_bad"
         }
       ],
       "repaired_tables": [
@@ -318,105 +275,36 @@
           "column_names": [
             "order_id",
             "amount",
-            "status"
+            "date"
           ],
           "dataframe": [
             {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
-            },
-            {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
-            },
-            {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
+              "amount": "150.0",
+              "date": "99/99/9999",
+              "order_id": "1"
             }
           ],
           "file_type": "CSV",
-          "row_count": 3,
+          "row_count": 1,
           "sheet_name": null,
-          "source_path": "data\\uploads\\1fd68d3689e0\\messy.csv",
-          "table_name": "messy"
+          "source_path": "data\\uploads\\062d80162da9\\dates_bad.csv",
+          "table_name": "dates_bad"
         }
       ],
       "safety_issues": [],
       "source_file_refs": [
-        "data\\uploads\\1fd68d3689e0\\messy.csv"
+        "data\\uploads\\062d80162da9\\dates_bad.csv"
       ],
       "world_data_path": null,
-      "world_hash": "e60d01abd42b3ddc9b10eda2bcbf05343e53e9617b0423e1d825d6cc18dbd486",
+      "world_hash": "e30d35e60efcd2b80c446c8d1a0355d5279de02c8cf80d007eda826d18c2ac70",
       "world_id": "world_001"
-    },
-    {
-      "assumptions": [],
-      "description": "World 2: DUPLICATE_ROWS:EXACT_DEDUP",
-      "is_safe": true,
-      "policies": [
-        {
-          "affected_sources": [],
-          "issue_type": "DUPLICATE_ROWS",
-          "parameters": {},
-          "rationale": "World branch: EXACT_DEDUP",
-          "selected_action": "EXACT_DEDUP"
-        }
-      ],
-      "repair_history": [
-        {
-          "affected_rows": 1,
-          "column": null,
-          "details": {},
-          "operation": "EXACT_DEDUP",
-          "reason": "Duplicate policy: EXACT_DEDUP (removed exact full-row duplicates)",
-          "rows_after": 2,
-          "rows_before": 3,
-          "table": "messy"
-        }
-      ],
-      "repaired_tables": [
-        {
-          "column_names": [
-            "order_id",
-            "amount",
-            "status"
-          ],
-          "dataframe": [
-            {
-              "amount": "100.0",
-              "order_id": "1",
-              "status": "completed"
-            },
-            {
-              "amount": "200.0",
-              "order_id": "2",
-              "status": "completed"
-            }
-          ],
-          "file_type": "CSV",
-          "row_count": 2,
-          "sheet_name": null,
-          "source_path": "data\\uploads\\1fd68d3689e0\\messy.csv",
-          "table_name": "messy"
-        }
-      ],
-      "safety_issues": [],
-      "source_file_refs": [
-        "data\\uploads\\1fd68d3689e0\\messy.csv"
-      ],
-      "world_data_path": null,
-      "world_hash": "e60d01abd42b3ddc9b10eda2bcbf05343e53e9617b0423e1d825d6cc18dbd486",
-      "world_id": "world_002"
     }
   ],
   "replay": {
-    "canonical_payload_sha256": "ec5ff945c5b38cad0438d50f7ed8fc0e5a93e2b943a73728c41e3f4d4c021303",
-    "code_sha256": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+    "canonical_payload_sha256": "2cd068eae25b623830fcef9d21dfdedde4abba41fa5166d51f395c73d24c8cde",
+    "code_sha256": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a",
     "dataset_sha256": {
-      "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+      "dates_bad": "151fed0e875655e3c1e5a5deb6619f52ca1bdbc20fb24faf5b15a34aaba6745c"
     },
     "dependencies": {
       "duckdb": "1.5.6",
@@ -424,44 +312,141 @@
       "pydantic": "2.13.5"
     },
     "platform": "win32",
-    "proof_id": "proof_ec5ff945c5b3",
+    "proof_id": "proof_2cd068eae25b",
     "python_version": "3.11.9",
     "replay_executable": true,
-    "reproduction_command": "python scripts/replay.py proofs/proof_ec5ff945c5b3.json",
+    "reproduction_command": "python scripts/replay.py proofs/proof_2cd068eae25b.json",
     "tolerance": {
       "abs_tol": 1e-06,
       "rel_tol": 0.0001
     },
     "world_id": "world_001"
   },
-  "reproduction_command": "python scripts/replay.py proofs/proof_ec5ff945c5b3.json",
-  "result": null,
-  "result_type": null,
+  "reproduction_command": "python scripts/replay.py proofs/proof_2cd068eae25b.json",
+  "result": 150.0,
+  "result_type": "float",
   "result_unit": null,
   "result_world_id": "world_001",
-  "session_id": "1fd68d3689e0",
-  "skeptic_review": null,
-  "status": "AMBIGUOUS",
+  "session_id": "062d80162da9",
+  "skeptic_review": {
+    "concerns": [],
+    "has_blocking_concerns": false,
+    "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+  },
+  "status": "VERIFIED",
   "truth_gate_result": {
-    "answer_blocked": true,
+    "answer_blocked": false,
     "assumptions": [],
-    "blocking_reasons": [
-      "Truth gate blocked answer publication."
+    "blocking_reasons": [],
+    "claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 150.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "150.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "150.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 4865fa07440dc8a6...",
+            "value": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 150.0,
+        "numerical_value": 150.0,
+        "relevant_period": null,
+        "status": "VERIFIED",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
     ],
-    "claims": [],
-    "deterministic_decision": "BLOCKED",
-    "evidence_refs": [],
+    "deterministic_decision": "PERMITTED",
+    "evidence_refs": [
+      {
+        "evidence_type": "execution_stdout",
+        "reference": "world_world_001 authoritative execution result",
+        "value": "150.0"
+      },
+      {
+        "evidence_type": "duckdb_result",
+        "reference": "independent DuckDB SQL calculation",
+        "value": "150.0"
+      },
+      {
+        "evidence_type": "verification_check",
+        "reference": "dual-path MATCH_CHECK",
+        "value": "PASS"
+      },
+      {
+        "evidence_type": "lineage",
+        "reference": "analysis code SHA-256: 4865fa07440dc8a6...",
+        "value": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a"
+      }
+    ],
     "failed_claims": [],
-    "overall_status": "AMBIGUOUS",
-    "skeptic_review": null,
+    "overall_status": "VERIFIED",
+    "skeptic_review": {
+      "concerns": [],
+      "has_blocking_concerns": false,
+      "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+    },
     "unsupported_claims": [],
-    "verified_claims": []
+    "verified_claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 150.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "150.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "150.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 4865fa07440dc8a6...",
+            "value": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 150.0,
+        "numerical_value": 150.0,
+        "relevant_period": null,
+        "status": "VERIFIED",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
+    ]
   },
   "verification_results": [
     {
       "checks": [
         {
-          "actual": "400.0",
+          "actual": "150.0",
           "check": "PANDAS_PRIMARY",
           "detail": "Primary execution succeeded and emitted authoritative result.",
           "expected": null,
@@ -482,38 +467,38 @@
           "outcome": "PASS"
         },
         {
-          "actual": "400.0",
+          "actual": "150.0",
           "check": "DUCKDB_SECONDARY",
           "detail": "Independent DuckDB query executed successfully.",
           "expected": null,
           "outcome": "PASS"
         },
         {
-          "actual": "400.0",
+          "actual": "150.0",
           "check": "MATCH_CHECK",
           "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "400.0",
+          "expected": "150.0",
           "outcome": "PASS"
         },
         {
-          "actual": "400.0",
+          "actual": "150.0",
           "check": "METAMORPHIC_ROW_SHUFFLE",
           "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "400.0",
+          "expected": "150.0",
           "outcome": "PASS"
         },
         {
-          "actual": "500.0",
+          "actual": "300.0",
           "check": "METAMORPHIC_DUPLICATE_INJECTION",
           "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "500.0",
+          "expected": "300.0",
           "outcome": "PASS"
         },
         {
-          "actual": "400.0",
+          "actual": "150.0",
           "check": "METAMORPHIC_ADD_ZERO",
           "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "400.0",
+          "expected": "150.0",
           "outcome": "PASS"
         },
         {
@@ -524,10 +509,10 @@
           "outcome": "SKIPPED"
         },
         {
-          "actual": "100.0",
+          "actual": "150.0",
           "check": "METAMORPHIC_FILTER_MONOTONICITY",
-          "detail": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
-          "expected": "<= 400.0",
+          "detail": "Subset (first 1 rows) resulted in 150.0 <= 150.0",
+          "expected": "<= 150.0",
           "outcome": "PASS"
         },
         {
@@ -545,35 +530,35 @@
           "outcome": "SKIPPED"
         }
       ],
-      "duckdb_result": 400.0,
+      "duckdb_result": 150.0,
       "failures": [],
       "impact": null,
-      "independent_result": 400.0,
+      "independent_result": 150.0,
       "metamorphic_results": [
         {
           "applicable": true,
           "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "400.0",
+          "expected": "150.0",
           "name": "METAMORPHIC_ROW_SHUFFLE",
-          "observed": "400.0",
+          "observed": "150.0",
           "status": "PASS",
           "transformation": "Reversed rows (iloc[::-1]) on all input tables."
         },
         {
           "applicable": true,
           "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "500.0",
+          "expected": "300.0",
           "name": "METAMORPHIC_DUPLICATE_INJECTION",
-          "observed": "500.0",
+          "observed": "300.0",
           "status": "PASS",
           "transformation": "Appended clone of row 0 to main table."
         },
         {
           "applicable": true,
           "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
-          "expected": "400.0",
+          "expected": "150.0",
           "name": "METAMORPHIC_ADD_ZERO",
-          "observed": "400.0",
+          "observed": "150.0",
           "status": "PASS",
           "transformation": "Appended synthetic row with 0.0 metric value."
         },
@@ -588,10 +573,10 @@
         },
         {
           "applicable": true,
-          "details": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
-          "expected": "<= 400.0",
+          "details": "Subset (first 1 rows) resulted in 150.0 <= 150.0",
+          "expected": "<= 150.0",
           "name": "METAMORPHIC_FILTER_MONOTONICITY",
-          "observed": "100.0",
+          "observed": "150.0",
           "status": "PASS",
           "transformation": "Restricted dataset to first half of rows."
         },
@@ -614,15 +599,15 @@
           "transformation": "None"
         }
       ],
-      "pandas_result": 400.0,
-      "primary_result": 400.0,
+      "pandas_result": 150.0,
+      "primary_result": 150.0,
       "provenance_details": {
-        "code_hash": "e84f8b2767717691836ee3a79dec42cb37b55500a0eb9e72ed1444b64fb707c5",
+        "code_hash": "4865fa07440dc8a6cef6f9aebacb85538db408a09390b6bc8b45cd394b9d251a",
         "current_table_hashes": {
-          "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+          "dates_bad": "151fed0e875655e3c1e5a5deb6619f52ca1bdbc20fb24faf5b15a34aaba6745c"
         },
         "recorded_table_hashes": {
-          "messy": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+          "dates_bad": "151fed0e875655e3c1e5a5deb6619f52ca1bdbc20fb24faf5b15a34aaba6745c"
         },
         "world_id": "world_001"
       },

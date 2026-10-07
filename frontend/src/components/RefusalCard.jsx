@@ -4,17 +4,30 @@ import { AlertOctagon, HelpCircle, FileText, Code } from 'lucide-react';
 export default function RefusalCard({
   status,
   answer,
+  impactAnalysis,
   onViewProof,
   onViewCode,
 }) {
   const isAmbiguous = status === 'AMBIGUOUS';
   const isUnanswerable = status === 'UNANSWERABLE';
 
-  const reason = isAmbiguous
-    ? 'Alternative repair policies produce diverging analytical numbers across repair worlds ($300.0 vs $400.0). TruthGate blocked asserting a single speculative guess.'
-    : isUnanswerable
-    ? (answer || 'One or more required fields or metrics cannot be constructed from the ingested source schemas.')
-    : (answer || 'Independent DuckDB verification or metamorphic checks did not reach mathematical consensus.');
+  let reason = answer;
+  if (isAmbiguous) {
+    if (
+      impactAnalysis &&
+      impactAnalysis.minimum !== undefined &&
+      impactAnalysis.maximum !== undefined &&
+      impactAnalysis.spread !== undefined
+    ) {
+      reason = `${answer || 'Alternative repair policies produce diverging analytical numbers across repair worlds.'} Evaluated range across worlds: ${impactAnalysis.minimum} to ${impactAnalysis.maximum} (Spread: ${impactAnalysis.spread}).`;
+    } else {
+      reason = answer || 'Alternative repair policies produce diverging analytical numbers across repair worlds. TruthGate blocked asserting a single speculative result.';
+    }
+  } else if (!reason) {
+    reason = isUnanswerable
+      ? 'One or more required fields or metrics cannot be constructed from the ingested source schemas.'
+      : 'Independent DuckDB verification or metamorphic checks did not reach mathematical consensus.';
+  }
 
   const remediation = isAmbiguous
     ? 'Choose an explicit policy in the Repair Decision Center (e.g. Exact Dedup) or inspect the spread in the Compare Worlds panel.'

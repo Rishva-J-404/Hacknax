@@ -117,6 +117,12 @@ def compare_values(
 # Deterministic SQL Execution on In-Memory DuckDB
 # ---------------------------------------------------------------------------
 
+def _q(identifier: str) -> str:
+    """Safely quote an identifier in DuckDB to handle spaces, dots, hyphens, and keywords."""
+    clean = str(identifier).replace('"', '""')
+    return f'"{clean}"'
+
+
 def execute_duckdb_plan(
     tables: dict[str, pd.DataFrame],
     plan: AnalysisPlan,
@@ -132,17 +138,17 @@ def execute_duckdb_plan(
     main_tbl = plan.required_tables[0] if plan.required_tables else list(tables.keys())[0]
 
     # Joins
-    from_clause = main_tbl
+    from_clause = _q(main_tbl)
     if len(plan.required_tables) > 1 and plan.join_keys:
         for left_ref, right_ref in plan.join_keys:
             other_tbl = right_ref.table
-            from_clause += f" INNER JOIN {other_tbl} ON {left_ref.table}.{left_ref.column} = {other_tbl}.{right_ref.column}"
+            from_clause += f" INNER JOIN {_q(other_tbl)} ON {_q(left_ref.table)}.{_q(left_ref.column)} = {_q(other_tbl)}.{_q(right_ref.column)}"
 
     # WHERE clauses
     where_parts: list[str] = []
     if plan.filters:
         for f in plan.filters:
-            col_sql = f"{f.column.table}.{f.column.column}" if len(plan.required_tables) > 1 else f.column.column
+            col_sql = f"{_q(f.column.table)}.{_q(f.column.column)}" if len(plan.required_tables) > 1 else _q(f.column.column)
             val = f.value
             op = f.operator
             if op == "==":
@@ -150,9 +156,11 @@ def execute_duckdb_plan(
                 if isinstance(val, (int, float)):
                     where_parts.append(f"CAST({col_sql} AS VARCHAR) LIKE '%{val}%'")
                 else:
-                    where_parts.append(f"CAST({col_sql} AS VARCHAR) = '{val}'")
+                    safe_val = str(val).replace("'", "''")
+                    where_parts.append(f"CAST({col_sql} AS VARCHAR) = '{safe_val}'")
             elif op == "!=":
-                where_parts.append(f"CAST({col_sql} AS VARCHAR) != '{val}'")
+                safe_val = str(val).replace("'", "''")
+                where_parts.append(f"CAST({col_sql} AS VARCHAR) != '{safe_val}'")
             elif op in {">", ">=", "<", "<="}:
                 where_parts.append(f"TRY_CAST({col_sql} AS DOUBLE) {op} {val}")
 
@@ -163,9 +171,9 @@ def execute_duckdb_plan(
 
     if plan.group_by and agg:
         grp_col = plan.group_by[0].column
-        grp_sql = f"{plan.group_by[0].table}.{grp_col}" if len(plan.required_tables) > 1 else grp_col
+        grp_sql = f"{_q(plan.group_by[0].table)}.{_q(grp_col)}" if len(plan.required_tables) > 1 else _q(grp_col)
         metric_col = agg.column.column
-        metric_sql = f"{agg.column.table}.{metric_col}" if len(plan.required_tables) > 1 else metric_col
+        metric_sql = f"{_q(agg.column.table)}.{_q(metric_col)}" if len(plan.required_tables) > 1 else _q(metric_col)
         op = agg.operation.lower()
         sql_op = "AVG" if op in {"mean", "average"} else op.upper()
 
@@ -194,7 +202,7 @@ def execute_duckdb_plan(
 
     elif agg:
         col_name = agg.column.column
-        col_sql = f"{agg.column.table}.{col_name}" if len(plan.required_tables) > 1 else col_name
+        col_sql = f"{_q(agg.column.table)}.{_q(col_name)}" if len(plan.required_tables) > 1 else _q(col_name)
         op = agg.operation.lower()
 
         if op == "count":
@@ -210,7 +218,7 @@ def execute_duckdb_plan(
         elif op == "percentage":
             # Ratio of filtered rows to total rows in main table
             q = (
-                f"SELECT ROUND(COUNT(*) * 100.0 / NULLIF((SELECT COUNT(*) FROM {main_tbl}), 0), 2) "
+                f"SELECT ROUND(COUNT(*) * 100.0 / NULLIF((SELECT COUNT(*) FROM {_q(main_tbl)}), 0), 2) "
                 f"FROM {from_clause}{where_clause}"
             )
             res = conn.execute(q).fetchone()

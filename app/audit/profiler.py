@@ -517,8 +517,30 @@ def audit_tables(
 
     # 1. Profile each table individually
     for t in tables:
-        profile = audit_table(t)
-        table_profiles.append(profile)
+        try:
+            profile = audit_table(t)
+            table_profiles.append(profile)
+        except Exception as exc:
+            col_names = [str(c) for c in t.dataframe.columns]
+            table_profiles.append(
+                TableProfile(
+                    source=t.table_name,
+                    row_count=len(t.dataframe),
+                    column_count=len(col_names),
+                    column_names=col_names,
+                    column_profiles=[],
+                    issues=[
+                        DataIssue(
+                            issue_type=IssueType.ANOMALY,
+                            severity=IssueSeverity.HIGH,
+                            affected_source=t.table_name,
+                            affected_columns=col_names[:5],
+                            description=f"Automated audit profiling error on table '{t.table_name}': {str(exc)}",
+                        )
+                    ],
+                    dataset_sha256=compute_table_sha256(t),
+                )
+            )
 
     # 2. Cross-table checks across pairs
     if len(tables) > 1:

@@ -81,11 +81,12 @@ export default function DatasetSources({
             ref={fileInputRef}
             style={{ display: 'none' }}
             multiple
-            accept=".csv,.xlsx,.json"
+            accept=".csv,.xlsx,.xls,.json,.tsv"
             onChange={(e) => {
               if (e.target.files?.length > 0) {
                 onUploadFiles(e.target.files);
               }
+              e.target.value = '';
             }}
           />
 
@@ -101,7 +102,7 @@ export default function DatasetSources({
           >
             <UploadCloud size={28} color="var(--text-muted)" style={{ margin: '0 auto 8px' }} />
             <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
-              Drop CSV, XLSX, or JSON files here
+              Drop CSV, XLSX, XLS, or JSON files here
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
               or click to browse from local disk
@@ -110,7 +111,7 @@ export default function DatasetSources({
 
           {/* Active Dataset Cards */}
           {uploadedFiles.map((f, idx) => (
-            <div key={idx} className="active-dataset-card">
+            <div key={idx} className="active-dataset-card" style={{ marginTop: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <FileSpreadsheet size={15} color="var(--accent-blue)" />
@@ -129,6 +130,19 @@ export default function DatasetSources({
                   SHA-256: {f.sha256?.substring(0, 10)}...
                 </span>
               </div>
+              {f.columns && f.columns.length > 0 && (
+                <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>COLUMNS:</span>
+                  {f.columns.slice(0, 8).map((col, cIdx) => (
+                    <span key={cIdx} className="font-mono" style={{ fontSize: '10px', background: 'var(--bg-surface)', padding: '1px 6px', borderRadius: '3px', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+                      {col}
+                    </span>
+                  ))}
+                  {f.columns.length > 8 && (
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>+{f.columns.length - 8} more</span>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -1,0 +1,231 @@
+{
+  "analysis_code_path": "proofs\\unanswerable.py",
+  "analysis_plan": {
+    "aggregation": null,
+    "ambiguity_flags": [],
+    "analysis_intent": null,
+    "assumptions": [],
+    "filters": [],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "What is the profit in Tokyo?",
+    "required_columns": [],
+    "required_tables": [],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "UNANSWERABLE",
+    "unanswerable_evidence": "Question asks for 'profit', but no matching column was found.",
+    "unanswerable_reason": "MISSING_REQUIRED_FIELD"
+  },
+  "answer_blocked": true,
+  "assumptions": [],
+  "blocking_reasons": [
+    "Question asks for 'profit', but no matching column was found."
+  ],
+  "claims": [],
+  "created_at": "2026-10-07T12:49:00.026037",
+  "data_quality_ledger": {
+    "all_issues": [
+      {
+        "affected_columns": [
+          "date"
+        ],
+        "affected_source": "ambig",
+        "description": "Column 'date' in 'ambig' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+        "evidence": {
+          "ambiguous_count": 2,
+          "column": "date",
+          "has_part1_gt_12": false,
+          "has_part2_gt_12": false,
+          "possible_interpretations": [
+            "DD/MM/YYYY",
+            "MM/DD/YYYY"
+          ],
+          "sample_ambiguous_dates": [
+            "01/02/2024",
+            "03/04/2024"
+          ]
+        },
+        "issue_type": "AMBIGUOUS_DATE_FORMAT",
+        "severity": "HIGH"
+      }
+    ],
+    "audit_timestamp": "2026-10-07T12:49:00.025488+00:00",
+    "has_critical_issues": false,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 3,
+        "column_names": [
+          "id",
+          "date",
+          "val"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "2"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          },
+          {
+            "column_name": "date",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "date",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "01/02/2024",
+              "03/04/2024"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          },
+          {
+            "column_name": "val",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "10",
+              "20"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          }
+        ],
+        "dataset_sha256": "b7fd4de0536b6564c11eedd3ae3b9ffcd9f1611e4d63e60151e6079eabc032cc",
+        "issues": [
+          {
+            "affected_columns": [
+              "date"
+            ],
+            "affected_source": "ambig",
+            "description": "Column 'date' in 'ambig' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+            "evidence": {
+              "ambiguous_count": 2,
+              "column": "date",
+              "has_part1_gt_12": false,
+              "has_part2_gt_12": false,
+              "possible_interpretations": [
+                "DD/MM/YYYY",
+                "MM/DD/YYYY"
+              ],
+              "sample_ambiguous_dates": [
+                "01/02/2024",
+                "03/04/2024"
+              ]
+            },
+            "issue_type": "AMBIGUOUS_DATE_FORMAT",
+            "severity": "HIGH"
+          }
+        ],
+        "row_count": 2,
+        "source": "ambig"
+      }
+    ]
+  },
+  "deterministic_decision": "BLOCKED",
+  "draft_explanation": null,
+  "execution_summary": {
+    "duration_seconds": 0.0,
+    "execution_error": "Question asks for 'profit', but no matching column was found.",
+    "execution_success": false,
+    "exit_code": 1,
+    "generated_code_hash": null,
+    "input_data_hashes": {},
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": ""
+  },
+  "formatted_result": null,
+  "hashes": {
+    "analysis_code_sha256": null,
+    "canonical_proof_sha256": "289e4f3281a36b53252fcc245ee94adce73e5a1f1d570fdc7b50d08a2eebf7e8",
+    "dataset_sha256": {
+      "ambig": "b7fd4de0536b6564c11eedd3ae3b9ffcd9f1611e4d63e60151e6079eabc032cc"
+    },
+    "policy_sha256": null
+  },
+  "impact_range": {},
+  "lineage": {
+    "columns_used": [],
+    "filters_applied": [],
+    "joins_performed": [],
+    "repair_policy_summary": null,
+    "source_files": [
+      "ambig"
+    ],
+    "tables_used": [],
+    "transformations": []
+  },
+  "metamorphic_summary": [],
+  "normalized_question": "What is the profit in Tokyo?",
+  "proof_id": "proof_289e4f3281a3",
+  "question": "What is the profit in Tokyo?",
+  "refusal_reason": null,
+  "relevant_period": null,
+  "repair_worlds": [],
+  "replay": {
+    "canonical_payload_sha256": "289e4f3281a36b53252fcc245ee94adce73e5a1f1d570fdc7b50d08a2eebf7e8",
+    "code_sha256": null,
+    "dataset_sha256": {
+      "ambig": "b7fd4de0536b6564c11eedd3ae3b9ffcd9f1611e4d63e60151e6079eabc032cc"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_289e4f3281a3",
+    "python_version": "3.11.9",
+    "replay_executable": false,
+    "reproduction_command": "python scripts/replay.py proofs/proof_289e4f3281a3.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "unanswerable_world"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_289e4f3281a3.json",
+  "result": null,
+  "result_type": null,
+  "result_unit": null,
+  "result_world_id": "unanswerable_world",
+  "session_id": null,
+  "skeptic_review": null,
+  "status": "UNANSWERABLE",
+  "truth_gate_result": {
+    "answer_blocked": true,
+    "assumptions": [],
+    "blocking_reasons": [
+      "Question asks for 'profit', but no matching column was found."
+    ],
+    "claims": [],
+    "deterministic_decision": "BLOCKED",
+    "evidence_refs": [],
+    "failed_claims": [],
+    "overall_status": "UNANSWERABLE",
+    "skeptic_review": null,
+    "unsupported_claims": [],
+    "verified_claims": []
+  },
+  "verification_results": []
+}

@@ -57,6 +57,42 @@ from app.repair.contracts import (
 DEFAULT_MAX_WORLDS: int = 16
 
 
+class TableRepairResult(tuple):
+    """
+    Tuple containing (repaired_tables, full_history, all_assumptions).
+    Supports standard 3-element unpacking while providing .is_safe and .safety_issues.
+    """
+    repaired_tables: list[LoadedTable]
+    history: list[RepairHistoryEntry]
+    assumptions: list[str]
+    is_safe: bool
+    safety_issues: list[str]
+
+    def __new__(
+        cls,
+        repaired_tables: list[LoadedTable],
+        history: list[RepairHistoryEntry],
+        assumptions: list[str],
+        is_safe: bool = True,
+        safety_issues: list[str] | None = None,
+    ):
+        return super().__new__(cls, (repaired_tables, history, assumptions))
+
+    def __init__(
+        self,
+        repaired_tables: list[LoadedTable],
+        history: list[RepairHistoryEntry],
+        assumptions: list[str],
+        is_safe: bool = True,
+        safety_issues: list[str] | None = None,
+    ):
+        self.repaired_tables = repaired_tables
+        self.history = history
+        self.assumptions = assumptions
+        self.is_safe = is_safe
+        self.safety_issues = safety_issues or []
+
+
 # ---------------------------------------------------------------------------
 # Repair Operations on a single DataFrame Copy
 # ---------------------------------------------------------------------------
@@ -69,6 +105,7 @@ def _apply_duplicate_policy(
     assumptions: list[str],
 ) -> pd.DataFrame:
     """Apply duplicate handling policy to a copied DataFrame."""
+    df = df.copy(deep=True)
     act = action.upper()
     rows_before = len(df)
 
@@ -151,6 +188,7 @@ def _apply_missing_policy(
     assumptions: list[str],
 ) -> pd.DataFrame:
     """Apply missing value policy to a copied DataFrame."""
+    df = df.copy(deep=True)
     act = action.upper()
     rows_before = len(df)
 
@@ -317,10 +355,12 @@ def _apply_date_policy(
     target_column: str,
     history: list[RepairHistoryEntry],
     assumptions: list[str],
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, bool, list[str]]:
     """Apply date interpretation policy to a copied DataFrame."""
+    df = df.copy(deep=True)
     act = action.upper()
     rows_before = len(df)
+    safety_issues: list[str] = []
 
     if act == DateFormatAction.KEEP_SOURCE.value:
         history.append(
@@ -334,11 +374,11 @@ def _apply_date_policy(
                 reason=f"Date policy: KEEP_SOURCE on '{target_column}'",
             )
         )
-        return df
+        return df, True, []
 
     if act in {DateFormatAction.DD_MM_YYYY.value, DateFormatAction.MM_DD_YYYY.value, DateFormatAction.YYYY_MM_DD.value}:
         if target_column not in df.columns:
-            return df
+            return df, True, []
 
         new_values: list[str] = []
         modified_count = 0
@@ -358,30 +398,48 @@ def _apply_date_policy(
 
                 if act == DateFormatAction.DD_MM_YYYY.value:
                     day, month = p1, p2
-                    if not (1 <= month <= 12 and 1 <= day <= 31):
-                        raise RepairError(
-                            f"Cannot convert date '{s}' in '{target_column}' under policy DD_MM_YYYY: invalid day/month.",
-                            reason="UNPARSEABLE_DATE",
-                            details={"column": target_column, "value": s, "policy": act},
+                    valid_date = False
+                    if 1 <= month <= 12 and 1 <= day <= 31:
+                        try:
+                            datetime(year, month, day)
+                            valid_date = True
+                        except ValueError:
+                            pass
+                    if not valid_date:
+                        safety_issues.append(
+                            f"Cannot convert date '{s}' in '{target_column}' under policy DD_MM_YYYY: invalid day/month."
                         )
+                        break
                     converted = f"{day:02d}/{month:02d}/{year:04d}"
                 elif act == DateFormatAction.MM_DD_YYYY.value:
                     month, day = p1, p2
-                    if not (1 <= month <= 12 and 1 <= day <= 31):
-                        raise RepairError(
-                            f"Cannot convert date '{s}' in '{target_column}' under policy MM_DD_YYYY: invalid day/month.",
-                            reason="UNPARSEABLE_DATE",
-                            details={"column": target_column, "value": s, "policy": act},
+                    valid_date = False
+                    if 1 <= month <= 12 and 1 <= day <= 31:
+                        try:
+                            datetime(year, month, day)
+                            valid_date = True
+                        except ValueError:
+                            pass
+                    if not valid_date:
+                        safety_issues.append(
+                            f"Cannot convert date '{s}' in '{target_column}' under policy MM_DD_YYYY: invalid day/month."
                         )
+                        break
                     converted = f"{month:02d}/{day:02d}/{year:04d}"
                 else:  # YYYY_MM_DD
                     day, month = p1, p2
-                    if not (1 <= month <= 12 and 1 <= day <= 31):
-                        raise RepairError(
-                            f"Cannot convert date '{s}' in '{target_column}' under policy YYYY_MM_DD: invalid day/month.",
-                            reason="UNPARSEABLE_DATE",
-                            details={"column": target_column, "value": s, "policy": act},
+                    valid_date = False
+                    if 1 <= month <= 12 and 1 <= day <= 31:
+                        try:
+                            datetime(year, month, day)
+                            valid_date = True
+                        except ValueError:
+                            pass
+                    if not valid_date:
+                        safety_issues.append(
+                            f"Cannot convert date '{s}' in '{target_column}' under policy YYYY_MM_DD: invalid day/month."
                         )
+                        break
                     converted = f"{year:04d}-{month:02d}-{day:02d}"
 
                 new_values.append(converted)
@@ -391,12 +449,18 @@ def _apply_date_policy(
             elif m_iso:
                 # ISO format: YYYY-MM-DD
                 year, month, day = int(m_iso.group(1)), int(m_iso.group(2)), int(m_iso.group(3))
-                if not (1 <= month <= 12 and 1 <= day <= 31):
-                    raise RepairError(
-                        f"Cannot convert ISO date '{s}' in '{target_column}': invalid day/month.",
-                        reason="UNPARSEABLE_DATE",
-                        details={"column": target_column, "value": s},
+                valid_date = False
+                if 1 <= month <= 12 and 1 <= day <= 31:
+                    try:
+                        datetime(year, month, day)
+                        valid_date = True
+                    except ValueError:
+                        pass
+                if not valid_date:
+                    safety_issues.append(
+                        f"Cannot convert ISO date '{s}' in '{target_column}': invalid day/month."
                     )
+                    break
                 if act == DateFormatAction.DD_MM_YYYY.value:
                     converted = f"{day:02d}/{month:02d}/{year:04d}"
                 elif act == DateFormatAction.MM_DD_YYYY.value:
@@ -415,6 +479,26 @@ def _apply_date_policy(
                     details={"column": target_column, "value": s},
                 )
 
+        if safety_issues:
+            # Policy is impossible for this table/column.
+            # DO NOT mutate df. Record impossibility in history and return is_safe=False.
+            history.append(
+                RepairHistoryEntry(
+                    operation="DATE_POLICY_IMPOSSIBLE",
+                    table=table_name,
+                    column=target_column,
+                    rows_before=rows_before,
+                    rows_after=rows_before,
+                    affected_rows=0,
+                    reason=f"Date policy {act} impossible on '{target_column}': {safety_issues[0]}",
+                    details={"column": target_column, "policy": act, "safety_issues": safety_issues},
+                )
+            )
+            assumptions.append(
+                f"Date interpretation {act} for '{target_column}' was impossible; world marked unsafe."
+            )
+            return df, False, safety_issues
+
         df[target_column] = new_values
         assumptions.append(f"Interpreted date column '{target_column}' as {act}.")
         history.append(
@@ -428,7 +512,7 @@ def _apply_date_policy(
                 reason=f"Date policy: {act} applied to '{target_column}'",
             )
         )
-        return df
+        return df, True, []
 
     raise RepairError(
         f"Unknown date action '{action}'.",
@@ -446,6 +530,7 @@ def _apply_currency_policy(
     assumptions: list[str],
 ) -> pd.DataFrame:
     """Apply currency handling policy to a copied DataFrame."""
+    df = df.copy(deep=True)
     act = action.upper()
     rows_before = len(df)
 
@@ -575,16 +660,19 @@ class RepairEngine:
         self,
         tables: list[LoadedTable],
         policies: list[RepairPolicy],
-    ) -> tuple[list[LoadedTable], list[RepairHistoryEntry], list[str]]:
+    ) -> TableRepairResult:
         """
         Apply a list of non-COMPARE RepairPolicy objects to deep copies of the tables.
 
         Returns:
-            (repaired_tables, repair_history, assumptions)
+            TableRepairResult: (repaired_tables, repair_history, assumptions)
+            with .is_safe and .safety_issues attributes.
         """
         repaired_tables: list[LoadedTable] = []
         full_history: list[RepairHistoryEntry] = []
         all_assumptions: list[str] = []
+        world_is_safe = True
+        world_safety_issues: list[str] = []
 
         for table in tables:
             # PROTECT ORIGINAL: Always make deep copy of the DataFrame
@@ -621,9 +709,12 @@ class RepairEngine:
                                 target_col = c
                                 break
                     if target_col:
-                        df_copy = _apply_date_policy(
+                        df_copy, is_safe_date, date_issues = _apply_date_policy(
                             df_copy, table_name, act, target_col, full_history, all_assumptions
                         )
+                        if not is_safe_date:
+                            world_is_safe = False
+                            world_safety_issues.extend(date_issues)
 
                 elif policy.issue_type == IssueType.MIXED_CURRENCIES:
                     target_col = params.get("column")
@@ -643,7 +734,13 @@ class RepairEngine:
             )
             repaired_tables.append(repaired_table)
 
-        return repaired_tables, full_history, all_assumptions
+        return TableRepairResult(
+            repaired_tables,
+            full_history,
+            all_assumptions,
+            is_safe=world_is_safe,
+            safety_issues=world_safety_issues,
+        )
 
     def expand_compare_policies(
         self,
@@ -778,7 +875,12 @@ class RepairEngine:
             description = f"World {idx}: " + "; ".join(desc_parts)
 
             # Apply policies to copies
-            repaired_tables, history, assumptions = self.apply_policies_to_tables(tables, pol_set)
+            apply_res = self.apply_policies_to_tables(tables, pol_set)
+            repaired_tables = apply_res.repaired_tables
+            history = apply_res.history
+            assumptions = apply_res.assumptions
+            is_safe = getattr(apply_res, "is_safe", True)
+            safety_issues = getattr(apply_res, "safety_issues", [])
 
             if was_bounded:
                 assumptions.append(
@@ -809,8 +911,8 @@ class RepairEngine:
                 repair_history=history,
                 repaired_tables=repaired_tables,
                 assumptions=assumptions,
-                is_safe=True,
-                safety_issues=[],
+                is_safe=is_safe,
+                safety_issues=safety_issues,
             )
             worlds.append(world)
 

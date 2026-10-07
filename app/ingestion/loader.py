@@ -54,6 +54,7 @@ from app.ingestion.contracts import (
 
 _EXTENSION_MAP: dict[str, FileType] = {
     ".csv": FileType.CSV,
+    ".tsv": FileType.CSV,
     ".xlsx": FileType.XLSX,
     ".xls": FileType.XLSX,
     ".json": FileType.JSON,
@@ -162,13 +163,41 @@ def _load_csv(path: Path, alias: str | None) -> list[LoadedTable]:
                         character rather than an exception.
     """
     try:
-        df = pd.read_csv(
-            path,
-            dtype=str,
-            keep_default_na=False,
-            na_values=[],
-            encoding_errors="replace",
-        )
+        try:
+            df = pd.read_csv(
+                path,
+                dtype=str,
+                keep_default_na=False,
+                na_values=[],
+                encoding="utf-8-sig",
+                encoding_errors="replace",
+            )
+        except Exception:
+            df = pd.read_csv(
+                path,
+                sep=None,
+                engine="python",
+                dtype=str,
+                keep_default_na=False,
+                na_values=[],
+                encoding="utf-8-sig",
+                encoding_errors="replace",
+            )
+        if len(df.columns) == 1 and (";" in str(df.columns[0]) or "\t" in str(df.columns[0])):
+            try:
+                df = pd.read_csv(
+                    path,
+                    sep=None,
+                    engine="python",
+                    dtype=str,
+                    keep_default_na=False,
+                    na_values=[],
+                    encoding="utf-8-sig",
+                    encoding_errors="replace",
+                )
+            except Exception:
+                pass
+        df.columns = [str(c).strip() for c in df.columns]
     except Exception as exc:
         raise IngestionError(
             f"Could not read CSV: {exc}",
@@ -228,6 +257,7 @@ def _load_xlsx(path: Path, alias: str | None) -> list[LoadedTable]:
                 reason="READ_ERROR",
             ) from exc
 
+        df.columns = [str(c).strip() for c in df.columns]
         tables.append(
             LoadedTable(
                 source_path=path,
@@ -274,42 +304,39 @@ def _load_json(path: Path, alias: str | None) -> list[LoadedTable]:
     # ── Structure validation ──────────────────────────────────────────────
     if not isinstance(data, list):
         raise IngestionError(
-            "JSON root must be an array (list), not an object or scalar. "
+            "JSON root must be an array (list). "
             "Only flat array-of-objects JSON is supported in Phase 2.",
             path=path,
             reason="NON_TABULAR_JSON",
         )
 
-    if len(data) > 0:
-        # Check that each element is a plain dict with no nested dicts/lists.
-        for i, row in enumerate(data):
-            if not isinstance(row, dict):
+    for idx, row in enumerate(data):
+        if not isinstance(row, dict):
+            raise IngestionError(
+                f"Row {idx} is not an object. "
+                "Only flat array-of-objects JSON is supported in Phase 2.",
+                path=path,
+                reason="NON_TABULAR_JSON",
+            )
+        for key, val in row.items():
+            if isinstance(val, (dict, list)):
                 raise IngestionError(
-                    f"JSON array element at index {i} is not an object (dict). "
+                    f"Row {idx} contains nested structure (dict or list). "
                     "Only flat array-of-objects JSON is supported in Phase 2.",
                     path=path,
                     reason="NON_TABULAR_JSON",
                 )
-            for key, val in row.items():
-                if isinstance(val, (dict, list)):
-                    raise IngestionError(
-                        f"JSON field '{key}' at index {i} contains a nested "
-                        "object or array.  Only flat (non-nested) JSON is "
-                        "supported in Phase 2.",
-                        path=path,
-                        reason="NON_TABULAR_JSON",
-                    )
 
     # ── Build DataFrame from validated data ───────────────────────────────
     try:
         if len(data) == 0:
             # Empty array — produce an empty DataFrame.
-            # No column names can be inferred; return an empty table.
             df = pd.DataFrame()
         else:
             df = pd.DataFrame(data)
             # Cast all columns to str, consistent with CSV/XLSX loaders.
             df = df.astype(str)
+            df.columns = [str(c).strip() for c in df.columns]
     except Exception as exc:
         raise IngestionError(
             f"Could not construct DataFrame from JSON: {exc}",
