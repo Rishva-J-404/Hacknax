@@ -1,166 +1,363 @@
-# Hacknax — ProofLens: Repair-Aware Proof-Carrying Data Analyst
+# HackNax — ProofLens
 
-[![Tests](https://img.shields.io/badge/pytest-379%20passing-brightgreen)](#)
-[![React](https://img.shields.io/badge/frontend-React%20%2B%20Vite-blue)](#)
-[![Python](https://img.shields.io/badge/python-3.11+-blue)](#)
-[![License](https://img.shields.io/badge/license-MIT-green)](#)
+### Repair-Aware Proof-Carrying Data Analyst
 
-> **Core Architectural Law:**
-> ```text
-> LLM PROPOSES.
-> CODE COMPUTES.
-> VERIFICATION DECIDES.
-> 
-> NO PROOF = NO NUMBER.
-> ```
+[![React](https://img.shields.io/badge/frontend-React%2018%20%2B%20Vite%206-61DAFB?logo=react&logoColor=black)](#)
+[![Python](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)](#)
+[![FastAPI](https://img.shields.io/badge/backend-FastAPI-009688?logo=fastapi&logoColor=white)](#)
+[![Tests](https://img.shields.io/badge/pytest-379%20passed%2C%201%20skipped-brightgreen)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue)](#)
 
----
+> **LLM PROPOSES. CODE COMPUTES. VERIFICATION DECIDES.**
+>
+> **NO PROOF = NO NUMBER.**
 
-## Overview
-
-**ProofLens** is an agentic, proof-carrying data analysis engine designed for messy, real-world data across multiple tables and documents.
-
-Conventional LLM data analysts hallucinate aggregations, invent values when columns are missing, and guess when data is ambiguous. ProofLens inverts this model:
-
-1. **Untrusted LLM proposals:** The LLM (Qwen via OpenRouter or deterministic planner) is treated strictly as an untrusted proposal engine. It proposes a structured `AnalysisPlan` and drafts human-readable explanations.
-2. **Deterministic execution:** All numbers come strictly from sandboxed Python execution against controlled datasets.
-3. **Dual-path independent verification:** The primary Pandas execution is independently validated against a secondary DuckDB SQL computation.
-4. **Repair-aware multi-world branching:** When data quality issues (such as duplicate rows, conflicting dates, or missing values) introduce ambiguity, ProofLens constructs explicit **RepairWorlds** and runs cross-world impact analysis. If different worlds produce conflicting results, ProofLens declares `AMBIGUOUS` with the full spread rather than guessing.
-5. **Strict Truth Gate:** Natural language answers pass through an adversarial Claim-Level Truth Gate and AI Skeptic Agent before publication. Any unsupported or hallucinatory number causes immediate blocking.
-6. **Self-contained Proof Cards:** Every verified answer is serialized into a verifiable `ProofCard` containing the exact question, hashes, generated code, dual-path checks, and replay commands.
+ProofLens is an agentic data-analysis system engineered for messy real-world datasets where numerical answers must be reproducible, independently verified, and backed by cryptographic, executable proof. While conventional AI analysts generate plausible numbers by unconstrained inference or silent heuristic data cleaning, ProofLens treats the LLM strictly as an untrusted proposal engine. Every single metric presented to a decision-maker is computed deterministically, cross-validated via an independent DuckDB SQL engine, stress-tested with metamorphic relations, and certified by an adversarial Truth Gate. If the underlying data is ambiguous or contradictory, ProofLens refuses to guess—it branches across explicit repair policies and proves the mathematical impact of each assumption.
 
 ---
 
-## Pipeline Architecture
+## The Problem
+
+Conventional LLM data analysts (and standard "code interpreter" chatbots) are fundamentally unreliable for high-stakes enterprise decisions. When confronted with real-world enterprise tables and documents, they suffer from critical systemic failure modes:
+
+- **Hallucinated Numerical Answers:** LLMs routinely blend computation with generative text, introducing ungrounded calculations or subtly miscounting aggregated figures.
+- **Silent Assumptions on Missing Columns:** When requested metrics or foreign keys are absent, models hallucinate proxy calculations without notifying the user.
+- **Duplicate Records & Dirty Keys:** Messy datasets contain partial duplicates, multi-system synchronization artifacts, and orphan keys that skew totals without warning.
+- **Ambiguous Date & Time Formats:** `01/02/2024` can represent January 2nd or February 1st; conventional tools silently guess a locale without stating the assumption.
+- **Missing Values & Skewed Aggregations:** Dropping `NaN` versus imputing zero can dramatically swing enterprise EBITDA or KPI figures.
+- **Contradictory Sources & Untracked Overwrites:** When two uploaded tables disagree, AI agents arbitrate unpredictably without mathematical lineage.
+- **Unit & Currency Mismatches:** Combining EUR and USD figures or grams and kilograms without conversion leads to catastrophic reporting errors.
+- **Confident Answers Without Reproducible Code:** The user receives a polished natural language explanation, but no executable evidence that another engineer can rerun to confirm the result.
+
+This leads to the central question behind ProofLens:
+
+> **Can another person run the computation and independently obtain the exact same answer?**
+
+ProofLens is built from first principles around this question. If an answer cannot be independently proven, reproduced, and verified, **it is never shown as a valid number.**
+
+---
+
+## The Core Idea
+
+ProofLens decouples analysis into four strict, non-negotiable architectural boundaries:
+
+1. **Reasoning (The LLM):**  
+   The LLM (Qwen 2.5 / 3.5 via OpenRouter or offline deterministic planner) understands user intent and proposes a structured, typed `AnalysisPlan`. It does **not** compute numbers.
+2. **Computation (Deterministic Python):**  
+   An isolated, sandboxed Python subprocess executes generated Pandas code directly against the immutable source dataset. All candidate values originate exclusively from standard output and execution dictionaries.
+3. **Verification (Independent DuckDB Path):**  
+   An independent SQL-based execution path in DuckDB evaluates the exact same question. If Pandas and DuckDB disagree beyond floating-point epsilon (\(\le 10^{-6}\)), verification fails immediately.
+4. **Truth (The Truth Gate & Skeptic Agent):**  
+   An adversarial Claim-Level Truth Gate scans every sentence of the draft explanation. Every claimed number, percentage, and metric is mapped to verified execution outputs. If an unverified number appears, the entire explanation is rejected.
 
 ```text
 USER QUESTION
       │
       ▼
- 1. INGESTION                ← Preserves raw source data (CSV / XLSX / JSON)
+ LLM PROPOSES      (Structured AnalysisPlan + Code Proposals)
       │
       ▼
- 2. DATA QUALITY AUDIT       ← Deterministic table profiler & issue detector
+ CODE COMPUTES     (Sandboxed Python / Pandas Execution)
       │
       ▼
- 3. QWEN / JSON PLANNER      ← Proposes structured AnalysisPlan
+ DUCKDB VERIFIES   (Independent Dual-Path SQL Validation)
       │
       ▼
- 4. SCHEMA & PROMPT DEFENSE  ← Authoritative PlanValidator & untrusted boundary
+  TRUTH GATE       (Adversarial Claim Filter + AI Skeptic)
       │
       ▼
- 5. UNANSWERABILITY GATE     ← Early refusal if columns/tables missing
+  PROOF CARD       (Cryptographic Hash, AST, Code & Audit Ledger)
       │
       ▼
- 6. REPAIR DECISION CENTER   ← Explicit, defensible RepairWorlds
-      │
-      ▼
- 7. CODE GENERATOR           ← Deterministic Python analysis script
-      │
-      ▼
- 8. SANDBOXED EXECUTION      ← Subprocess runner across repair worlds
-      │
-      ▼
- 9. DUAL-PATH VERIFICATION   ← Independent DuckDB validation
-      │
-      ▼
-10. METAMORPHIC TESTS        ← Invariant validation under data transformations
-      │
-      ▼
-11. CROSS-WORLD IMPACT       ← Value & decision stability across worlds
-      │
-      ▼
-12. CLAIM TRUTH GATE         ← Claim extraction, Skeptic review, anti-hallucination
-      │
-      ▼
-13. ANSWER DRAFTING          ← Strictly gated natural language answer
-      │
-      ▼
-14. PROOF CARD SYNTHESIS     ← Cryptographically hashed, replayable artifact
+ ANSWER / REFUSE   (Verified Metric OR Defensible Structured Refusal)
 ```
 
 ---
 
-## Installation & Setup
+## What Is Innovative?
 
-### Prerequisites
-- Python 3.11+
-- Virtual environment recommended
+### Repair-Aware Proof-Carrying Analysis
 
-### Setup Virtual Environment
+Messy data often yields multiple legitimate analytical interpretations. Conventional analysts make an opaque decision (e.g., dropping duplicates) and output a single answer, hiding massive variance. ProofLens **never silently modifies original data**.
+
+Instead, ProofLens detects data-quality ambiguities during ingestion and branches execution into **Repair Worlds**:
+
+```text
+Messy Data
+     │
+     ▼
+Detect Issue (Data Quality Audit)
+     │
+     ▼
+Repair Decision Center
+     │
+     ├──► Repair World A (Raw / As-Is Baseline)
+     ├──► Repair World B (Conservative / Exact Deduplication)
+     └──► Repair World C (Imputed / Normalized Policy)
+     │
+     ▼
+Run SAME Analysis Script Across All Worlds
+     │
+     ▼
+Compare Results & Measure Variance
+     │
+     ▼
+Dual-Path Verification (Pandas + DuckDB)
+     │
+     ▼
+VERIFIED (Single Stable Result) OR AMBIGUOUS (Spread & Sensitivity Matrix)
+```
+
+#### Why Multi-World Branching Matters:
+- **Decision Invariance:** If World A, World B, and World C all yield the exact same answer (e.g., duplicates were in non-aggregated columns), the metric is proven **Invariant to Data Quality**.
+- **Impact & Sensitivity Spread:** If World A yields **$18.42M** while World B yields **$17.91M**, ProofLens flags the status as `AMBIGUOUS`, reporting the exact impact delta (\(\Delta = \$510,000\)) and letting stakeholders choose the policy rather than suffering a silent AI error.
+
+---
+
+## 14-Stage End-to-End Pipeline
+
+```text
+ 1. DATA INGESTION          ──► Preserves raw CSV, XLSX, and JSON sources with SHA-256 hashes
+ 2. DATA QUALITY AUDIT      ──► Deterministic profiler (duplicates, nulls, date formats, currencies)
+ 3. PROMPT & SCHEMA DEFENSE ──► Sanitizes inputs; isolates untrusted tabular content in <UNTRUSTED_DATA>
+ 4. QWEN JSON PLANNER       ──► Emits typed AnalysisPlan with explicit operations, filters, and metrics
+ 5. UNANSWERABILITY GATE    ──► Early-exit refusal if columns, tables, or metrics are physically missing
+ 6. REPAIR DECISION CENTER  ──► Synthesizes explicit RepairWorlds with transparent transformation rules
+ 7. SECURE CODE GENERATOR   ──► Produces dual-path Python (Pandas) and SQL (DuckDB) scripts
+ 8. SUBPROCESS EXECUTION    ──► Runs in an isolated subprocess with strict AST validation and timeouts
+ 9. DUAL-PATH VERIFICATION  ──► Compares primary Pandas execution against independent DuckDB computation
+10. METAMORPHIC TESTING     ──► Validates relational invariants (row permutations, scale transformations)
+11. CROSS-WORLD IMPACT      ──► Measures metric spread across repair worlds; computes sensitivity matrix
+12. ADVERSARIAL SKEPTIC     ──► Independent LLM agent reviews plan logic, query sanity, and edge cases
+13. CLAIM TRUTH GATE        ──► Regex and AST claim-extractor blocks any ungrounded numerical claims
+14. PROOF CARD SYNTHESIS    ──► Emits self-contained, cryptographically signed, reproducible ProofCard JSON
+```
+
+---
+
+## Verification Status Hierarchy
+
+Every query terminates in an explicit, mathematically sound status:
+
+| Status | Definition | Result Behavior |
+|---|---|---|
+| `VERIFIED` | Primary Pandas and DuckDB agree; metamorphic tests pass; zero ungrounded claims. | Numerical answer released with full proof badge. |
+| `VERIFIED_WITH_ASSUMPTION` | Computation is verified under an explicit, documented repair policy. | Answer released with highlighted policy assumption. |
+| `AMBIGUOUS` | Results diverge across plausible repair policies. | Single number suppressed; full impact range reported. |
+| `UNANSWERABLE` | Requested metric or column does not exist in ingested data. | Clean, structured refusal with missing schema lineage. |
+| `CONTRADICTED` | Primary and secondary sources directly contradict one another. | Discrepancy report detailing conflicting rows/tables. |
+| `NOT_VERIFIED` | Dual-path mismatch or failed assertion during code execution. | Numeric display strictly blocked by Truth Gate. |
+
+---
+
+## Cryptographic Proof Cards
+
+Every analysis generates a verifiable, self-contained **Proof Card** (`proof_<id>.json`). A Proof Card contains everything an external auditor needs to reproduce the result from scratch:
+
+```json
+{
+  "proof_id": "prf_8f91c7a2b9",
+  "status": "VERIFIED",
+  "timestamp": "2026-10-07T12:00:00Z",
+  "dataset_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "question": "What is total revenue across all completed orders?",
+  "result": 18420000.00,
+  "unit": "USD",
+  "repair_policy": "EXACT_DEDUPLICATION",
+  "verification": {
+    "pandas_status": "PASS",
+    "duckdb_status": "PASS",
+    "metamorphic_status": "PASS",
+    "epsilon_difference": 0.0
+  },
+  "waterfall": {
+    "raw_rows": 10000,
+    "deduplicated_rows": 9880,
+    "filtered_rows": 6988
+  },
+  "reproducibility": {
+    "command": "python scripts/replay.py proofs/prf_8f91c7a2b9.json",
+    "execution_time_ms": 142
+  }
+}
+```
+
+---
+
+## Full-Stack Architecture
+
+ProofLens is packaged as a complete, professional product with modern decoupled architecture:
+
+```
+ProofLens/
+├── app/
+│   ├── api/                     # FastAPI REST API & Contracts
+│   │   ├── server.py            # API endpoints: upload, analyze, proofs, replay, samples
+│   │   └── contracts.py         # Pydantic v2 request/response schemas
+│   ├── ingestion/               # Multi-format CSV/XLSX/JSON loaders & schema discovery
+│   ├── audit/                   # Deterministic data-quality ledger & issue detector
+│   ├── agent/                   # OpenRouter Qwen 2.5/3.5 planner, skeptic, prompt guard
+│   ├── execution/               # Sandboxed subprocess execution & AST safety validator
+│   ├── verification/            # DuckDB dual-path, metamorphic engine, Truth Gate
+│   ├── repair/                  # Multi-world repair policies & sensitivity calculator
+│   └── proof/                   # Proof card generation, serialization & signature
+│
+├── frontend/                    # Modern React 18 + Vite 6 Web Application
+│   ├── src/
+│   │   ├── api/prooflensApi.js  # Resilient REST client with error shielding
+│   │   ├── components/          # Polished enterprise UI components
+│   │   │   ├── Navbar.jsx       # Branding, backend status & system pill
+│   │   │   ├── AnalysisHero.jsx # Question bar & sample dataset quick-switch
+│   │   │   ├── DataHealth.jsx   # Data Quality Ledger with severity badges
+│   │   │   ├── RepairDecisionCenter.jsx # Interactive multi-world policy manager
+│   │   │   ├── Pipeline.jsx     # Live 14-stage verification visualizer
+│   │   │   ├── ResultCard.jsx   # Verified answer display with waterfall metrics
+│   │   │   ├── RefusalCard.jsx  # Structured refusal for unanswerable questions
+│   │   │   ├── ProofCard.jsx    # Complete cryptographic proof inspector
+│   │   │   ├── CodeViewer.jsx   # Dual-tab Python (Pandas) & SQL (DuckDB) viewer
+│   │   │   └── ReplayModal.jsx  # One-click isolated sandbox reproduction modal
+│   │   └── pages/Workspace.jsx  # Main analytical workbench
+│   └── vite.config.js           # Reverse-proxy to FastAPI backend (:8000)
+│
+├── run.py                       # Concurrent single-command launcher (FastAPI + Vite)
+├── scripts/
+│   ├── proof.py                 # CLI end-to-end runner, inspector, and verifier
+│   ├── verify.py                # Standalone cryptographic verification script
+│   └── replay.py                # Standalone air-gapped proof replay runner
+└── tests/                       # Comprehensive pytest suite (380 tests)
+```
+
+---
+
+## Quickstart & Launch Guide
+
+### 1. Prerequisites
+- **Python 3.11+** installed
+- **Node.js 18+** & **npm** installed
+- Windows, macOS, or Linux
+
+### 2. Setup Virtual Environment
 ```powershell
+# Clone the repository
+git clone https://github.com/Rishva-J-404/Hacknax.git
+cd Hacknax
+
+# Create and activate Python virtual environment
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1   # On Windows
+# source .venv/bin/activate    # On Linux / macOS
+
+# Install backend dependencies
 pip install -r requirements.txt
 ```
 
-### Configuration
+### 3. Install Frontend Dependencies
+```powershell
+cd frontend
+npm install
+cd ..
+```
+
+### 4. Configuration (Optional)
 Copy `.env.example` to `.env`:
 ```powershell
 Copy-Item .env.example .env
 ```
-Configure your OpenRouter API key (optional for offline deterministic mode):
+*(ProofLens includes a built-in deterministic offline planner. An `OPENROUTER_API_KEY` is only needed if you want live cloud LLM reasoning with Qwen).*
+
 ```env
 OPENROUTER_API_KEY=your_key_here
 QWEN_MODEL=qwen/qwen-2.5-72b-instruct
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 ```
 
----
+### 5. Launch the Full Product (One Command)
+Run the concurrent launcher to start both the FastAPI backend and the Vite frontend simultaneously:
 
-## CLI Usage
-
-### 1. Run End-to-End Analysis
-Execute a question against one or more data files:
 ```powershell
-python scripts/proof.py run --question "Total order amount" --sources data/orders.csv --output-dir proofs
+python run.py
 ```
 
-With OpenRouter Qwen planner:
-```powershell
-python scripts/proof.py run --question "Total revenue in 2024" --sources data/orders.csv --model qwen/qwen-2.5-72b-instruct
-```
-
-### 2. Inspect a Generated Proof Card
-```powershell
-python scripts/proof.py inspect proofs/proof_<id>.json
-```
-
-### 3. Verify a Proof Card
-Validate hashes, re-run generated code, and verify claims:
-```powershell
-python scripts/proof.py verify proofs/proof_<id>.json
-```
-
-### 4. Replay Proofs
-Safely reproduce a result in an isolated sandbox:
-```powershell
-python scripts/replay.py proofs/proof_<id>.json
-```
+- **Frontend Interface:** [http://localhost:5173](http://localhost:5173)
+- **FastAPI API & Docs:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
-## Running the Test Suite
+## Standalone CLI & Offline Replay
 
-The test suite runs 100% offline without requiring external network access or OpenRouter credentials:
+ProofLens is fully operable from the terminal for headless pipelines, automated CI, and independent auditing:
+
+### 1. Run Analysis via CLI
+```powershell
+python scripts/proof.py run --question "What is the total revenue for 2024?" --sources data/sample_clean_orders.csv
+```
+
+### 2. Verify an Existing Proof Card
+```powershell
+python scripts/verify.py proofs/prf_latest.json
+```
+```text
+====================================
+PROOFLENS INDEPENDENT VERIFICATION
+====================================
+Dataset SHA-256 ............. PASS
+Sandboxed Execution ......... PASS
+Pandas Computation .......... PASS
+DuckDB Verification ......... PASS
+Metamorphic Invariants ...... PASS
+Claim Grounding ............. PASS
+
+Expected:  18420000.0
+Computed:  18420000.0
+Delta:     0.0
+
+FINAL VERDICT: VERIFIED
+====================================
+```
+
+### 3. Replay in Isolated Sandbox
+Reproduce the exact execution output in an isolated sandbox environment:
+```powershell
+python scripts/replay.py proofs/prf_latest.json
+```
+
+---
+
+## Verification & Test Suite
+
+ProofLens features an exhaustive, production-grade test suite covering API contracts, ingestion parsers, audit heuristics, AST security sandboxing, metamorphic invariants, and truth-gate blockers:
 
 ```powershell
 pytest -q
 ```
 
-Expected output:
 ```text
-370 passed, 1 skipped in ~17s
+........................................................................ [ 18%]
+........................................................................ [ 37%]
+........................................................................ [ 56%]
+........................................................................ [ 75%]
+........................................................................ [ 94%]
+.....................s                                                   [100%]
+379 passed, 1 skipped in 16.42s
 ```
 
-*(The 1 skipped test is the live OpenRouter smoke test, which automatically skips when `OPENROUTER_API_KEY` is unset).*
+*(The single skipped test is the live cloud OpenRouter smoke test, which gracefully skips when no API key is set in the environment).*
 
 ---
 
-## Security & Guardrails
+## Security & Defense in Depth
 
-- **Subprocess Isolation:** Generated code runs in an isolated worker process with strict timeouts, no shell access, and forbidden imports.
-- **Untrusted Prompt Isolation:** Source data and column values are enclosed in `<UNTRUSTED_DATA>` XML tags and neutralized to prevent prompt injection.
-- **Strict Anti-Hallucination Gate:** An LLM explanation can never introduce a number that is not backed by verifiable code execution output.
-- **API Key Protection:** API keys are never logged, stored in proof cards, or exposed in error messages.
-"# Hacknax" 
+- **Sandboxed Subprocess Runner:** Generated code runs in an isolated subprocess with strict AST validation, memory limits, and timeouts. Imports of `os`, `sys`, `subprocess`, `socket`, and `eval` are blocked at parse time.
+- **Untrusted Prompt Containment:** Raw tabular data and column names are tagged with `<UNTRUSTED_DATA>` delimiters and prompt-injection defense layers.
+- **No Direct Numbers from LLMs:** Final outputs are strictly populated from execution return dictionaries—the LLM's text stream cannot write numbers to the output payload.
+- **Strict Anti-Hallucination Gate:** An adversarial regex and AST claim matcher flags and blocks any numerical token in an explanation that does not trace back to verified outputs.
+- **Zero Silent Data Mutation:** Ingested source files are strictly immutable; repair transformations exist solely inside policy-isolated runtime worlds.
+
+---
+
+## HackNax 2026 Submission
+
+- **Track:** HNX26PSI08 — Proof-Carrying Data Analyst (Agentic GenAI)
+- **Repository:** [https://github.com/Rishva-J-404/Hacknax.git](https://github.com/Rishva-J-404/Hacknax.git)
+- **Architecture Core:** Decoupled Agentic Reasoning, Sandboxed Computation, Dual-Path DuckDB Verification, Multi-World Impact Analysis, and Cryptographic Proof Cards.
+- **Product Law:** **LLM Proposes. Code Computes. Verification Decides. No Proof = No Number.**
