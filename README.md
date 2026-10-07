@@ -163,3 +163,4 @@ Expected output:
 - **Untrusted Prompt Isolation:** Source data and column values are enclosed in `<UNTRUSTED_DATA>` XML tags and neutralized to prevent prompt injection.
 - **Strict Anti-Hallucination Gate:** An LLM explanation can never introduce a number that is not backed by verifiable code execution output.
 - **API Key Protection:** API keys are never logged, stored in proof cards, or exposed in error messages.
+"# Hacknax" 
