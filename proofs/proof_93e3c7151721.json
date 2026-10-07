@@ -1,0 +1,694 @@
+{
+  "analysis_code_path": "proofs\\analysis_world_001.py",
+  "analysis_plan": {
+    "aggregation": {
+      "column": {
+        "column": "amount",
+        "table": "ambiguous_dates"
+      },
+      "operation": "sum",
+      "unit": null
+    },
+    "ambiguity_flags": [],
+    "analysis_intent": "SUM_AMOUNT",
+    "assumptions": [
+      "Calculated over all valid matching rows."
+    ],
+    "filters": [],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "Total order amount",
+    "required_columns": [
+      {
+        "column": "amount",
+        "table": "ambiguous_dates"
+      }
+    ],
+    "required_tables": [
+      "ambiguous_dates"
+    ],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "READY",
+    "unanswerable_evidence": null,
+    "unanswerable_reason": null
+  },
+  "answer_blocked": false,
+  "assumptions": [
+    "Interpreted date column 'date' as MM_DD_YYYY."
+  ],
+  "blocking_reasons": [],
+  "claims": [
+    {
+      "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 300.0.",
+      "claim_type": "NUMERICAL_VALUE",
+      "evidence_refs": [
+        {
+          "evidence_type": "execution_stdout",
+          "reference": "world_world_001 authoritative execution result",
+          "value": "300.0"
+        },
+        {
+          "evidence_type": "duckdb_result",
+          "reference": "independent DuckDB SQL calculation",
+          "value": "300.0"
+        },
+        {
+          "evidence_type": "verification_check",
+          "reference": "dual-path MATCH_CHECK",
+          "value": "PASS"
+        },
+        {
+          "evidence_type": "lineage",
+          "reference": "analysis code SHA-256: 938e98811cb502bb...",
+          "value": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6"
+        }
+      ],
+      "mismatch_reason": null,
+      "normalized_value": 300.0,
+      "numerical_value": 300.0,
+      "relevant_period": null,
+      "status": "VERIFIED_WITH_ASSUMPTION",
+      "subject": "amount",
+      "supported": true,
+      "unit": null
+    }
+  ],
+  "created_at": "2026-10-07T10:58:30.215801",
+  "data_quality_ledger": {
+    "all_issues": [
+      {
+        "affected_columns": [
+          "date"
+        ],
+        "affected_source": "ambiguous_dates",
+        "description": "Column 'date' in 'ambiguous_dates' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+        "evidence": {
+          "ambiguous_count": 2,
+          "column": "date",
+          "has_part1_gt_12": false,
+          "has_part2_gt_12": false,
+          "possible_interpretations": [
+            "DD/MM/YYYY",
+            "MM/DD/YYYY"
+          ],
+          "sample_ambiguous_dates": [
+            "01/02/2024",
+            "03/04/2024"
+          ]
+        },
+        "issue_type": "AMBIGUOUS_DATE_FORMAT",
+        "severity": "HIGH"
+      }
+    ],
+    "audit_timestamp": "2026-10-07T10:58:29.520265+00:00",
+    "has_critical_issues": false,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 3,
+        "column_names": [
+          "order_id",
+          "amount",
+          "date"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "order_id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "2"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          },
+          {
+            "column_name": "amount",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "100.0",
+              "200.0"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          },
+          {
+            "column_name": "date",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "date",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "01/02/2024",
+              "03/04/2024"
+            ],
+            "total_count": 2,
+            "unique_count": 2
+          }
+        ],
+        "dataset_sha256": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2",
+        "issues": [
+          {
+            "affected_columns": [
+              "date"
+            ],
+            "affected_source": "ambiguous_dates",
+            "description": "Column 'date' in 'ambiguous_dates' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '01/02/2024').",
+            "evidence": {
+              "ambiguous_count": 2,
+              "column": "date",
+              "has_part1_gt_12": false,
+              "has_part2_gt_12": false,
+              "possible_interpretations": [
+                "DD/MM/YYYY",
+                "MM/DD/YYYY"
+              ],
+              "sample_ambiguous_dates": [
+                "01/02/2024",
+                "03/04/2024"
+              ]
+            },
+            "issue_type": "AMBIGUOUS_DATE_FORMAT",
+            "severity": "HIGH"
+          }
+        ],
+        "row_count": 2,
+        "source": "ambiguous_dates"
+      }
+    ]
+  },
+  "deterministic_decision": "PERMITTED",
+  "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 300.0.",
+  "execution_summary": {
+    "duration_seconds": 0.5374,
+    "execution_error": null,
+    "execution_success": true,
+    "exit_code": 0,
+    "generated_code_hash": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6",
+    "input_data_hashes": {
+      "ambiguous_dates": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2"
+    },
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": "300.0\n"
+  },
+  "formatted_result": "300.0",
+  "hashes": {
+    "analysis_code_sha256": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6",
+    "canonical_proof_sha256": "93e3c71517218dd522dced50eb05a96906b958599182e53fc141e76caa78840c",
+    "dataset_sha256": {
+      "ambiguous_dates": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2"
+    },
+    "policy_sha256": "89d76fbc6457a6018567831226e6001193b5f02fcfa51a247e7063f480944ad5"
+  },
+  "impact_range": {},
+  "lineage": {
+    "columns_used": [
+      "ambiguous_dates.amount"
+    ],
+    "filters_applied": [],
+    "joins_performed": [],
+    "repair_policy_summary": "AMBIGUOUS_DATE_FORMAT: MM_DD_YYYY",
+    "source_files": [
+      "ambiguous_dates"
+    ],
+    "tables_used": [
+      "ambiguous_dates"
+    ],
+    "transformations": [
+      "SUM(ambiguous_dates.amount)"
+    ]
+  },
+  "metamorphic_summary": [
+    {
+      "expected": "300.0",
+      "name": "METAMORPHIC_ROW_SHUFFLE",
+      "observed": "300.0",
+      "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+    },
+    {
+      "expected": "400.0",
+      "name": "METAMORPHIC_DUPLICATE_INJECTION",
+      "observed": "400.0",
+      "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended clone of row 0 to main table."
+    },
+    {
+      "expected": "300.0",
+      "name": "METAMORPHIC_ADD_ZERO",
+      "observed": "300.0",
+      "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended synthetic row with 0.0 metric value."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_RATIO_DUPLICATION",
+      "observed": "N/A",
+      "reason": "Metric 'sum' is not a scalar ratio/percentage.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "<= 300.0",
+      "name": "METAMORPHIC_FILTER_MONOTONICITY",
+      "observed": "100.0",
+      "reason": "Subset (first 1 rows) resulted in 100.0 <= 300.0",
+      "status": "PASS",
+      "transformation": "Restricted dataset to first half of rows."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_GROUP_TOTAL",
+      "observed": "N/A",
+      "reason": "Not a full grouped SUM without limit.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_TOP_N",
+      "observed": "N/A",
+      "reason": "Query is not a Top-1 winner selection.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    }
+  ],
+  "normalized_question": "Total order amount",
+  "proof_id": "proof_93e3c7151721",
+  "question": "Total order amount",
+  "refusal_reason": null,
+  "relevant_period": null,
+  "repair_worlds": [
+    {
+      "assumptions": [
+        "Interpreted date column 'date' as MM_DD_YYYY."
+      ],
+      "description": "World 1: AMBIGUOUS_DATE_FORMAT:MM_DD_YYYY",
+      "is_safe": true,
+      "policies": [
+        {
+          "affected_sources": [],
+          "issue_type": "AMBIGUOUS_DATE_FORMAT",
+          "parameters": {
+            "column": "date"
+          },
+          "rationale": "Audit detected ambiguous date format in 'date'; policy MM_DD_YYYY.",
+          "selected_action": "MM_DD_YYYY"
+        }
+      ],
+      "repair_history": [
+        {
+          "affected_rows": 0,
+          "column": "date",
+          "details": {},
+          "operation": "DATE_CONVERSION",
+          "reason": "Date policy: MM_DD_YYYY applied to 'date'",
+          "rows_after": 2,
+          "rows_before": 2,
+          "table": "ambiguous_dates"
+        }
+      ],
+      "repaired_tables": [
+        {
+          "column_names": [
+            "order_id",
+            "amount",
+            "date"
+          ],
+          "dataframe": [
+            {
+              "amount": "100.0",
+              "date": "01/02/2024",
+              "order_id": "1"
+            },
+            {
+              "amount": "200.0",
+              "date": "03/04/2024",
+              "order_id": "2"
+            }
+          ],
+          "file_type": "CSV",
+          "row_count": 2,
+          "sheet_name": null,
+          "source_path": "data\\uploads\\demo_ambiguous_dates_3333fd\\ambiguous_dates.csv",
+          "table_name": "ambiguous_dates"
+        }
+      ],
+      "safety_issues": [],
+      "source_file_refs": [
+        "data\\uploads\\demo_ambiguous_dates_3333fd\\ambiguous_dates.csv"
+      ],
+      "world_data_path": null,
+      "world_hash": "6e76f1a8b6a48d4808225ac389e5b29ed14c2888fd586c22304a3c085100e2cd",
+      "world_id": "world_001"
+    }
+  ],
+  "replay": {
+    "canonical_payload_sha256": "93e3c71517218dd522dced50eb05a96906b958599182e53fc141e76caa78840c",
+    "code_sha256": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6",
+    "dataset_sha256": {
+      "ambiguous_dates": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_93e3c7151721",
+    "python_version": "3.11.9",
+    "replay_executable": true,
+    "reproduction_command": "python scripts/replay.py proofs/proof_93e3c7151721.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "world_001"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_93e3c7151721.json",
+  "result": 300.0,
+  "result_type": "float",
+  "result_unit": null,
+  "result_world_id": "world_001",
+  "session_id": "demo_ambiguous_dates_3333fd",
+  "skeptic_review": {
+    "concerns": [],
+    "has_blocking_concerns": false,
+    "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+  },
+  "status": "VERIFIED_WITH_ASSUMPTION",
+  "truth_gate_result": {
+    "answer_blocked": false,
+    "assumptions": [
+      "Interpreted date column 'date' as MM_DD_YYYY."
+    ],
+    "blocking_reasons": [],
+    "claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 300.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "300.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "300.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 938e98811cb502bb...",
+            "value": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 300.0,
+        "numerical_value": 300.0,
+        "relevant_period": null,
+        "status": "VERIFIED_WITH_ASSUMPTION",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
+    ],
+    "deterministic_decision": "PERMITTED",
+    "evidence_refs": [
+      {
+        "evidence_type": "execution_stdout",
+        "reference": "world_world_001 authoritative execution result",
+        "value": "300.0"
+      },
+      {
+        "evidence_type": "duckdb_result",
+        "reference": "independent DuckDB SQL calculation",
+        "value": "300.0"
+      },
+      {
+        "evidence_type": "verification_check",
+        "reference": "dual-path MATCH_CHECK",
+        "value": "PASS"
+      },
+      {
+        "evidence_type": "lineage",
+        "reference": "analysis code SHA-256: 938e98811cb502bb...",
+        "value": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6"
+      }
+    ],
+    "failed_claims": [],
+    "overall_status": "VERIFIED_WITH_ASSUMPTION",
+    "skeptic_review": {
+      "concerns": [],
+      "has_blocking_concerns": false,
+      "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+    },
+    "unsupported_claims": [],
+    "verified_claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 300.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "300.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "300.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 938e98811cb502bb...",
+            "value": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 300.0,
+        "numerical_value": 300.0,
+        "relevant_period": null,
+        "status": "VERIFIED_WITH_ASSUMPTION",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
+    ]
+  },
+  "verification_results": [
+    {
+      "checks": [
+        {
+          "actual": "300.0",
+          "check": "PANDAS_PRIMARY",
+          "detail": "Primary execution succeeded and emitted authoritative result.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "PROVENANCE_CHECK",
+          "detail": "All provenance hashes and world identifiers verified.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "SCHEMA_CHECK",
+          "detail": "All required tables and columns verified in target RepairWorld.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "300.0",
+          "check": "DUCKDB_SECONDARY",
+          "detail": "Independent DuckDB query executed successfully.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "300.0",
+          "check": "MATCH_CHECK",
+          "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "300.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "300.0",
+          "check": "METAMORPHIC_ROW_SHUFFLE",
+          "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "300.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "400.0",
+          "check": "METAMORPHIC_DUPLICATE_INJECTION",
+          "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "300.0",
+          "check": "METAMORPHIC_ADD_ZERO",
+          "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "300.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_RATIO_DUPLICATION",
+          "detail": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "100.0",
+          "check": "METAMORPHIC_FILTER_MONOTONICITY",
+          "detail": "Subset (first 1 rows) resulted in 100.0 <= 300.0",
+          "expected": "<= 300.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_GROUP_TOTAL",
+          "detail": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_TOP_N",
+          "detail": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        }
+      ],
+      "duckdb_result": 300.0,
+      "failures": [],
+      "impact": null,
+      "independent_result": 300.0,
+      "metamorphic_results": [
+        {
+          "applicable": true,
+          "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "300.0",
+          "name": "METAMORPHIC_ROW_SHUFFLE",
+          "observed": "300.0",
+          "status": "PASS",
+          "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+        },
+        {
+          "applicable": true,
+          "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "name": "METAMORPHIC_DUPLICATE_INJECTION",
+          "observed": "400.0",
+          "status": "PASS",
+          "transformation": "Appended clone of row 0 to main table."
+        },
+        {
+          "applicable": true,
+          "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "300.0",
+          "name": "METAMORPHIC_ADD_ZERO",
+          "observed": "300.0",
+          "status": "PASS",
+          "transformation": "Appended synthetic row with 0.0 metric value."
+        },
+        {
+          "applicable": false,
+          "details": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_RATIO_DUPLICATION",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": true,
+          "details": "Subset (first 1 rows) resulted in 100.0 <= 300.0",
+          "expected": "<= 300.0",
+          "name": "METAMORPHIC_FILTER_MONOTONICITY",
+          "observed": "100.0",
+          "status": "PASS",
+          "transformation": "Restricted dataset to first half of rows."
+        },
+        {
+          "applicable": false,
+          "details": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_GROUP_TOTAL",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": false,
+          "details": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_TOP_N",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        }
+      ],
+      "pandas_result": 300.0,
+      "primary_result": 300.0,
+      "provenance_details": {
+        "code_hash": "938e98811cb502bb6c5b1cc8b04fe2df31ef8f7d02031d3c02fd14384aeb7da6",
+        "current_table_hashes": {
+          "ambiguous_dates": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2"
+        },
+        "recorded_table_hashes": {
+          "ambiguous_dates": "73cc2d51cfefeebd7593d2e6b31a4efc5ca3f6deb09c792e5e1f716136fc84c2"
+        },
+        "world_id": "world_001"
+      },
+      "provenance_verified": true,
+      "results_match": true,
+      "status": "VERIFIED_WITH_ASSUMPTION",
+      "tolerance_abs": 1e-09,
+      "tolerance_rel": 1e-09,
+      "verification_passed": true,
+      "warnings": [],
+      "world_assumptions": [
+        "Interpreted date column 'date' as MM_DD_YYYY."
+      ],
+      "world_id": "world_001",
+      "world_policies": [
+        "AMBIGUOUS_DATE_FORMAT: MM_DD_YYYY"
+      ]
+    }
+  ]
+}

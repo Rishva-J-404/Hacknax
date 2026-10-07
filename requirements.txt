@@ -1,0 +1,28 @@
+# ProofLens — Python Dependencies
+# Pinned where stability matters; ranges for supporting libraries.
+
+# ── Data processing ──────────────────────────────────────────────────────────
+pandas==2.2.3
+numpy
+openpyxl          # XLSX read/write
+
+# ── Analytical verification ───────────────────────────────────────────────────
+duckdb            # Independent verification path (Pandas primary / DuckDB secondary)
+
+# ── Data modelling & validation ───────────────────────────────────────────────
+pydantic          # Structured plan / proof objects
+
+# ── LLM API client ────────────────────────────────────────────────────────────
+httpx             # HTTP client for OpenRouter API calls
+
+# ── Environment / config ──────────────────────────────────────────────────────
+python-dotenv     # Load OPENROUTER_API_KEY, QWEN_MODEL, OPENROUTER_BASE_URL from .env
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest
+
+# ── NOT included (see notes below) ───────────────────────────────────────────
+# streamlit   — blocked: PyArrow conflicts with Windows Application Control policy
+# langchain   — not needed; no RAG, no vector DB in current scope
+# faiss       — not needed
+# tiktoken    — not needed yet

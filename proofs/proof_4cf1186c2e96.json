@@ -1,0 +1,643 @@
+{
+  "analysis_code_path": "proofs\\analysis_world_001.py",
+  "analysis_plan": {
+    "aggregation": {
+      "column": {
+        "column": "amount",
+        "table": "messy_duplicates"
+      },
+      "operation": "sum",
+      "unit": null
+    },
+    "ambiguity_flags": [],
+    "analysis_intent": "SUM_AMOUNT",
+    "assumptions": [
+      "Calculated over all valid matching rows."
+    ],
+    "filters": [],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "Total order amount",
+    "required_columns": [
+      {
+        "column": "amount",
+        "table": "messy_duplicates"
+      }
+    ],
+    "required_tables": [
+      "messy_duplicates"
+    ],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "READY",
+    "unanswerable_evidence": null,
+    "unanswerable_reason": null
+  },
+  "answer_blocked": true,
+  "assumptions": [],
+  "blocking_reasons": [
+    "Truth gate blocked answer publication."
+  ],
+  "claims": [],
+  "created_at": "2026-10-07T11:13:08.962714",
+  "data_quality_ledger": {
+    "all_issues": [
+      {
+        "affected_columns": [
+          "order_id",
+          "amount",
+          "status"
+        ],
+        "affected_source": "messy_duplicates",
+        "description": "1 exact duplicate rows detected in table 'messy_duplicates'.",
+        "evidence": {
+          "duplicate_row_count": 1,
+          "original_row_count": 3,
+          "unique_row_count": 2
+        },
+        "issue_type": "DUPLICATE_ROWS",
+        "severity": "HIGH"
+      },
+      {
+        "affected_columns": [
+          "order_id"
+        ],
+        "affected_source": "messy_duplicates",
+        "description": "Candidate key column 'order_id' in 'messy_duplicates' contains 1 duplicate key values across 3 rows.",
+        "evidence": {
+          "duplicate_key_count": 1,
+          "key_column": "order_id",
+          "sample_duplicate_keys": [
+            "1"
+          ],
+          "unique_keys": 2
+        },
+        "issue_type": "DUPLICATE_KEYS",
+        "severity": "HIGH"
+      }
+    ],
+    "audit_timestamp": "2026-10-07T11:13:07.712819+00:00",
+    "has_critical_issues": false,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 3,
+        "column_names": [
+          "order_id",
+          "amount",
+          "status"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "order_id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "2"
+            ],
+            "total_count": 3,
+            "unique_count": 2
+          },
+          {
+            "column_name": "amount",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "100.0",
+              "200.0"
+            ],
+            "total_count": 3,
+            "unique_count": 2
+          },
+          {
+            "column_name": "status",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "completed"
+            ],
+            "total_count": 3,
+            "unique_count": 1
+          }
+        ],
+        "dataset_sha256": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2",
+        "issues": [
+          {
+            "affected_columns": [
+              "order_id",
+              "amount",
+              "status"
+            ],
+            "affected_source": "messy_duplicates",
+            "description": "1 exact duplicate rows detected in table 'messy_duplicates'.",
+            "evidence": {
+              "duplicate_row_count": 1,
+              "original_row_count": 3,
+              "unique_row_count": 2
+            },
+            "issue_type": "DUPLICATE_ROWS",
+            "severity": "HIGH"
+          },
+          {
+            "affected_columns": [
+              "order_id"
+            ],
+            "affected_source": "messy_duplicates",
+            "description": "Candidate key column 'order_id' in 'messy_duplicates' contains 1 duplicate key values across 3 rows.",
+            "evidence": {
+              "duplicate_key_count": 1,
+              "key_column": "order_id",
+              "sample_duplicate_keys": [
+                "1"
+              ],
+              "unique_keys": 2
+            },
+            "issue_type": "DUPLICATE_KEYS",
+            "severity": "HIGH"
+          }
+        ],
+        "row_count": 3,
+        "source": "messy_duplicates"
+      }
+    ]
+  },
+  "deterministic_decision": "BLOCKED",
+  "draft_explanation": "I cannot provide a single numerical answer because multiple defensible interpretations exist in the data.\nDetails: Independent verification did not confirm the claim.",
+  "execution_summary": {
+    "duration_seconds": 0.5406,
+    "execution_error": null,
+    "execution_success": true,
+    "exit_code": 0,
+    "generated_code_hash": "da497e3ea49eab6b4be9a56bfdbbbbd8155af9862153fd38b8af6be0f2a370a2",
+    "input_data_hashes": {
+      "messy_duplicates": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+    },
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": "400.0\n"
+  },
+  "formatted_result": null,
+  "hashes": {
+    "analysis_code_sha256": "da497e3ea49eab6b4be9a56bfdbbbbd8155af9862153fd38b8af6be0f2a370a2",
+    "canonical_proof_sha256": "4cf1186c2e9695b6199dffc1b59cb90f06f581f24510683c3d62fae823d9d388",
+    "dataset_sha256": {
+      "messy_duplicates": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+    },
+    "policy_sha256": "7de04db0ddbb806556b35efd618d0e665e8671b09991f45fd7c4db9875bc4ca8"
+  },
+  "impact_range": {
+    "decision_stable": 0.0,
+    "maximum": 400.0,
+    "minimum": 300.0,
+    "spread": 100.0,
+    "value_stable": 0.0
+  },
+  "lineage": {
+    "columns_used": [
+      "messy_duplicates.amount"
+    ],
+    "filters_applied": [],
+    "joins_performed": [],
+    "repair_policy_summary": "DUPLICATE_ROWS: KEEP; DUPLICATE_ROWS: EXACT_DEDUP",
+    "source_files": [
+      "messy_duplicates"
+    ],
+    "tables_used": [
+      "messy_duplicates"
+    ],
+    "transformations": [
+      "SUM(messy_duplicates.amount)"
+    ]
+  },
+  "metamorphic_summary": [
+    {
+      "expected": "400.0",
+      "name": "METAMORPHIC_ROW_SHUFFLE",
+      "observed": "400.0",
+      "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+    },
+    {
+      "expected": "500.0",
+      "name": "METAMORPHIC_DUPLICATE_INJECTION",
+      "observed": "500.0",
+      "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended clone of row 0 to main table."
+    },
+    {
+      "expected": "400.0",
+      "name": "METAMORPHIC_ADD_ZERO",
+      "observed": "400.0",
+      "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended synthetic row with 0.0 metric value."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_RATIO_DUPLICATION",
+      "observed": "N/A",
+      "reason": "Metric 'sum' is not a scalar ratio/percentage.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "<= 400.0",
+      "name": "METAMORPHIC_FILTER_MONOTONICITY",
+      "observed": "100.0",
+      "reason": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
+      "status": "PASS",
+      "transformation": "Restricted dataset to first half of rows."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_GROUP_TOTAL",
+      "observed": "N/A",
+      "reason": "Not a full grouped SUM without limit.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_TOP_N",
+      "observed": "N/A",
+      "reason": "Query is not a Top-1 winner selection.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    }
+  ],
+  "normalized_question": "Total order amount",
+  "proof_id": "proof_4cf1186c2e96",
+  "question": "Total order amount",
+  "refusal_reason": null,
+  "relevant_period": null,
+  "repair_worlds": [
+    {
+      "assumptions": [],
+      "description": "World 1: DUPLICATE_ROWS:KEEP",
+      "is_safe": true,
+      "policies": [
+        {
+          "affected_sources": [],
+          "issue_type": "DUPLICATE_ROWS",
+          "parameters": {},
+          "rationale": "World branch: KEEP duplicates",
+          "selected_action": "KEEP"
+        }
+      ],
+      "repair_history": [
+        {
+          "affected_rows": 0,
+          "column": null,
+          "details": {},
+          "operation": "KEEP",
+          "reason": "Duplicate policy: KEEP (all rows preserved including duplicates)",
+          "rows_after": 3,
+          "rows_before": 3,
+          "table": "messy_duplicates"
+        }
+      ],
+      "repaired_tables": [
+        {
+          "column_names": [
+            "order_id",
+            "amount",
+            "status"
+          ],
+          "dataframe": [
+            {
+              "amount": "100.0",
+              "order_id": "1",
+              "status": "completed"
+            },
+            {
+              "amount": "100.0",
+              "order_id": "1",
+              "status": "completed"
+            },
+            {
+              "amount": "200.0",
+              "order_id": "2",
+              "status": "completed"
+            }
+          ],
+          "file_type": "CSV",
+          "row_count": 3,
+          "sheet_name": null,
+          "source_path": "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv",
+          "table_name": "messy_duplicates"
+        }
+      ],
+      "safety_issues": [],
+      "source_file_refs": [
+        "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv"
+      ],
+      "world_data_path": null,
+      "world_hash": "ba02d904b4bcbfc4b5296850b944d4524521a1d25c0cbd21e91912ea137706ee",
+      "world_id": "world_001"
+    },
+    {
+      "assumptions": [],
+      "description": "World 2: DUPLICATE_ROWS:EXACT_DEDUP",
+      "is_safe": true,
+      "policies": [
+        {
+          "affected_sources": [],
+          "issue_type": "DUPLICATE_ROWS",
+          "parameters": {},
+          "rationale": "World branch: EXACT_DEDUP",
+          "selected_action": "EXACT_DEDUP"
+        }
+      ],
+      "repair_history": [
+        {
+          "affected_rows": 1,
+          "column": null,
+          "details": {},
+          "operation": "EXACT_DEDUP",
+          "reason": "Duplicate policy: EXACT_DEDUP (removed exact full-row duplicates)",
+          "rows_after": 2,
+          "rows_before": 3,
+          "table": "messy_duplicates"
+        }
+      ],
+      "repaired_tables": [
+        {
+          "column_names": [
+            "order_id",
+            "amount",
+            "status"
+          ],
+          "dataframe": [
+            {
+              "amount": "100.0",
+              "order_id": "1",
+              "status": "completed"
+            },
+            {
+              "amount": "200.0",
+              "order_id": "2",
+              "status": "completed"
+            }
+          ],
+          "file_type": "CSV",
+          "row_count": 2,
+          "sheet_name": null,
+          "source_path": "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv",
+          "table_name": "messy_duplicates"
+        }
+      ],
+      "safety_issues": [],
+      "source_file_refs": [
+        "data\\uploads\\demo_messy_duplicates_20e7dd\\messy_duplicates.csv"
+      ],
+      "world_data_path": null,
+      "world_hash": "ba02d904b4bcbfc4b5296850b944d4524521a1d25c0cbd21e91912ea137706ee",
+      "world_id": "world_002"
+    }
+  ],
+  "replay": {
+    "canonical_payload_sha256": "4cf1186c2e9695b6199dffc1b59cb90f06f581f24510683c3d62fae823d9d388",
+    "code_sha256": "da497e3ea49eab6b4be9a56bfdbbbbd8155af9862153fd38b8af6be0f2a370a2",
+    "dataset_sha256": {
+      "messy_duplicates": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_4cf1186c2e96",
+    "python_version": "3.11.9",
+    "replay_executable": true,
+    "reproduction_command": "python scripts/replay.py proofs/proof_4cf1186c2e96.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "world_001"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_4cf1186c2e96.json",
+  "result": null,
+  "result_type": null,
+  "result_unit": null,
+  "result_world_id": "world_001",
+  "session_id": "demo_messy_duplicates_20e7dd",
+  "skeptic_review": null,
+  "status": "AMBIGUOUS",
+  "truth_gate_result": {
+    "answer_blocked": true,
+    "assumptions": [],
+    "blocking_reasons": [
+      "Truth gate blocked answer publication."
+    ],
+    "claims": [],
+    "deterministic_decision": "BLOCKED",
+    "evidence_refs": [],
+    "failed_claims": [],
+    "overall_status": "AMBIGUOUS",
+    "skeptic_review": null,
+    "unsupported_claims": [],
+    "verified_claims": []
+  },
+  "verification_results": [
+    {
+      "checks": [
+        {
+          "actual": "400.0",
+          "check": "PANDAS_PRIMARY",
+          "detail": "Primary execution succeeded and emitted authoritative result.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "PROVENANCE_CHECK",
+          "detail": "All provenance hashes and world identifiers verified.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "SCHEMA_CHECK",
+          "detail": "All required tables and columns verified in target RepairWorld.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "400.0",
+          "check": "DUCKDB_SECONDARY",
+          "detail": "Independent DuckDB query executed successfully.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "400.0",
+          "check": "MATCH_CHECK",
+          "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "400.0",
+          "check": "METAMORPHIC_ROW_SHUFFLE",
+          "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "500.0",
+          "check": "METAMORPHIC_DUPLICATE_INJECTION",
+          "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "500.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "400.0",
+          "check": "METAMORPHIC_ADD_ZERO",
+          "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_RATIO_DUPLICATION",
+          "detail": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "100.0",
+          "check": "METAMORPHIC_FILTER_MONOTONICITY",
+          "detail": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
+          "expected": "<= 400.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_GROUP_TOTAL",
+          "detail": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_TOP_N",
+          "detail": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        }
+      ],
+      "duckdb_result": 400.0,
+      "failures": [],
+      "impact": null,
+      "independent_result": 400.0,
+      "metamorphic_results": [
+        {
+          "applicable": true,
+          "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "name": "METAMORPHIC_ROW_SHUFFLE",
+          "observed": "400.0",
+          "status": "PASS",
+          "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+        },
+        {
+          "applicable": true,
+          "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "500.0",
+          "name": "METAMORPHIC_DUPLICATE_INJECTION",
+          "observed": "500.0",
+          "status": "PASS",
+          "transformation": "Appended clone of row 0 to main table."
+        },
+        {
+          "applicable": true,
+          "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "400.0",
+          "name": "METAMORPHIC_ADD_ZERO",
+          "observed": "400.0",
+          "status": "PASS",
+          "transformation": "Appended synthetic row with 0.0 metric value."
+        },
+        {
+          "applicable": false,
+          "details": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_RATIO_DUPLICATION",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": true,
+          "details": "Subset (first 1 rows) resulted in 100.0 <= 400.0",
+          "expected": "<= 400.0",
+          "name": "METAMORPHIC_FILTER_MONOTONICITY",
+          "observed": "100.0",
+          "status": "PASS",
+          "transformation": "Restricted dataset to first half of rows."
+        },
+        {
+          "applicable": false,
+          "details": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_GROUP_TOTAL",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": false,
+          "details": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_TOP_N",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        }
+      ],
+      "pandas_result": 400.0,
+      "primary_result": 400.0,
+      "provenance_details": {
+        "code_hash": "da497e3ea49eab6b4be9a56bfdbbbbd8155af9862153fd38b8af6be0f2a370a2",
+        "current_table_hashes": {
+          "messy_duplicates": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+        },
+        "recorded_table_hashes": {
+          "messy_duplicates": "b53019cc2c2b603def87305a14b1aab77951c6ab753de50e9154fa8cf736cad2"
+        },
+        "world_id": "world_001"
+      },
+      "provenance_verified": true,
+      "results_match": true,
+      "status": "VERIFIED",
+      "tolerance_abs": 1e-09,
+      "tolerance_rel": 1e-09,
+      "verification_passed": true,
+      "warnings": [],
+      "world_assumptions": [],
+      "world_id": "world_001",
+      "world_policies": [
+        "DUPLICATE_ROWS: KEEP"
+      ]
+    }
+  ]
+}

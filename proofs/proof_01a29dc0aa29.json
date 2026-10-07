@@ -1,0 +1,642 @@
+{
+  "analysis_code_path": "proofs\\analysis_world_001.py",
+  "analysis_plan": {
+    "aggregation": {
+      "column": {
+        "column": "amount",
+        "table": "clean_orders"
+      },
+      "operation": "sum",
+      "unit": null
+    },
+    "ambiguity_flags": [],
+    "analysis_intent": "SUM_AMOUNT",
+    "assumptions": [
+      "Calculated over all valid matching rows."
+    ],
+    "filters": [],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "Total order amount",
+    "required_columns": [
+      {
+        "column": "amount",
+        "table": "clean_orders"
+      }
+    ],
+    "required_tables": [
+      "clean_orders"
+    ],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "READY",
+    "unanswerable_evidence": null,
+    "unanswerable_reason": null
+  },
+  "answer_blocked": false,
+  "assumptions": [],
+  "blocking_reasons": [],
+  "claims": [
+    {
+      "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+      "claim_type": "NUMERICAL_VALUE",
+      "evidence_refs": [
+        {
+          "evidence_type": "execution_stdout",
+          "reference": "world_world_001 authoritative execution result",
+          "value": "600.0"
+        },
+        {
+          "evidence_type": "duckdb_result",
+          "reference": "independent DuckDB SQL calculation",
+          "value": "600.0"
+        },
+        {
+          "evidence_type": "verification_check",
+          "reference": "dual-path MATCH_CHECK",
+          "value": "PASS"
+        },
+        {
+          "evidence_type": "lineage",
+          "reference": "analysis code SHA-256: 555fe129667754e8...",
+          "value": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8"
+        }
+      ],
+      "mismatch_reason": null,
+      "normalized_value": 600.0,
+      "numerical_value": 600.0,
+      "relevant_period": null,
+      "status": "VERIFIED",
+      "subject": "amount",
+      "supported": true,
+      "unit": null
+    }
+  ],
+  "created_at": "2026-10-07T11:06:49.417703",
+  "data_quality_ledger": {
+    "all_issues": [],
+    "audit_timestamp": "2026-10-07T11:06:48.787582+00:00",
+    "has_critical_issues": false,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 3,
+        "column_names": [
+          "order_id",
+          "amount",
+          "status"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "order_id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "2",
+              "3"
+            ],
+            "total_count": 3,
+            "unique_count": 3
+          },
+          {
+            "column_name": "amount",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "100.0",
+              "200.0",
+              "300.0"
+            ],
+            "total_count": 3,
+            "unique_count": 3
+          },
+          {
+            "column_name": "status",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "completed"
+            ],
+            "total_count": 3,
+            "unique_count": 1
+          }
+        ],
+        "dataset_sha256": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3",
+        "issues": [],
+        "row_count": 3,
+        "source": "clean_orders"
+      }
+    ]
+  },
+  "deterministic_decision": "PERMITTED",
+  "draft_explanation": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+  "execution_summary": {
+    "duration_seconds": 0.5044,
+    "execution_error": null,
+    "execution_success": true,
+    "exit_code": 0,
+    "generated_code_hash": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8",
+    "input_data_hashes": {
+      "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+    },
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": "600.0\n"
+  },
+  "formatted_result": "600.0",
+  "hashes": {
+    "analysis_code_sha256": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8",
+    "canonical_proof_sha256": "01a29dc0aa298b5a56eb092a149184d42e57014d6cfa0803a53e52750d9ddeaa",
+    "dataset_sha256": {
+      "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+    },
+    "policy_sha256": "fa07ec4d8535f106a25ed947e2aea88a41c2d103298d4eb205cfa19b22476c53"
+  },
+  "impact_range": {},
+  "lineage": {
+    "columns_used": [
+      "clean_orders.amount"
+    ],
+    "filters_applied": [],
+    "joins_performed": [],
+    "repair_policy_summary": "DUPLICATE_ROWS: KEEP",
+    "source_files": [
+      "clean_orders"
+    ],
+    "tables_used": [
+      "clean_orders"
+    ],
+    "transformations": [
+      "SUM(clean_orders.amount)"
+    ]
+  },
+  "metamorphic_summary": [
+    {
+      "expected": "600.0",
+      "name": "METAMORPHIC_ROW_SHUFFLE",
+      "observed": "600.0",
+      "reason": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+    },
+    {
+      "expected": "700.0",
+      "name": "METAMORPHIC_DUPLICATE_INJECTION",
+      "observed": "700.0",
+      "reason": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended clone of row 0 to main table."
+    },
+    {
+      "expected": "600.0",
+      "name": "METAMORPHIC_ADD_ZERO",
+      "observed": "600.0",
+      "reason": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+      "status": "PASS",
+      "transformation": "Appended synthetic row with 0.0 metric value."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_RATIO_DUPLICATION",
+      "observed": "N/A",
+      "reason": "Metric 'sum' is not a scalar ratio/percentage.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "<= 600.0",
+      "name": "METAMORPHIC_FILTER_MONOTONICITY",
+      "observed": "100.0",
+      "reason": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
+      "status": "PASS",
+      "transformation": "Restricted dataset to first half of rows."
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_GROUP_TOTAL",
+      "observed": "N/A",
+      "reason": "Not a full grouped SUM without limit.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    },
+    {
+      "expected": "N/A",
+      "name": "METAMORPHIC_TOP_N",
+      "observed": "N/A",
+      "reason": "Query is not a Top-1 winner selection.",
+      "status": "SKIPPED",
+      "transformation": "None"
+    }
+  ],
+  "normalized_question": "Total order amount",
+  "proof_id": "proof_01a29dc0aa29",
+  "question": "Total order amount",
+  "refusal_reason": null,
+  "relevant_period": null,
+  "repair_worlds": [
+    {
+      "assumptions": [],
+      "description": "World 1: DUPLICATE_ROWS:KEEP",
+      "is_safe": true,
+      "policies": [
+        {
+          "affected_sources": [],
+          "issue_type": "DUPLICATE_ROWS",
+          "parameters": {},
+          "rationale": "Data audit clean; using original data as World 1 baseline.",
+          "selected_action": "KEEP"
+        }
+      ],
+      "repair_history": [
+        {
+          "affected_rows": 0,
+          "column": null,
+          "details": {},
+          "operation": "KEEP",
+          "reason": "Duplicate policy: KEEP (all rows preserved including duplicates)",
+          "rows_after": 3,
+          "rows_before": 3,
+          "table": "clean_orders"
+        }
+      ],
+      "repaired_tables": [
+        {
+          "column_names": [
+            "order_id",
+            "amount",
+            "status"
+          ],
+          "dataframe": [
+            {
+              "amount": "100.0",
+              "order_id": "1",
+              "status": "completed"
+            },
+            {
+              "amount": "200.0",
+              "order_id": "2",
+              "status": "completed"
+            },
+            {
+              "amount": "300.0",
+              "order_id": "3",
+              "status": "completed"
+            }
+          ],
+          "file_type": "CSV",
+          "row_count": 3,
+          "sheet_name": null,
+          "source_path": "data\\uploads\\demo_clean_orders_9f7ebd\\clean_orders.csv",
+          "table_name": "clean_orders"
+        }
+      ],
+      "safety_issues": [],
+      "source_file_refs": [
+        "data\\uploads\\demo_clean_orders_9f7ebd\\clean_orders.csv"
+      ],
+      "world_data_path": null,
+      "world_hash": "d37e8077ce5464a0d3658dd8fba42318c34c8f7cf5a817175f2c4033c1f60fab",
+      "world_id": "world_001"
+    }
+  ],
+  "replay": {
+    "canonical_payload_sha256": "01a29dc0aa298b5a56eb092a149184d42e57014d6cfa0803a53e52750d9ddeaa",
+    "code_sha256": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8",
+    "dataset_sha256": {
+      "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_01a29dc0aa29",
+    "python_version": "3.11.9",
+    "replay_executable": true,
+    "reproduction_command": "python scripts/replay.py proofs/proof_01a29dc0aa29.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "world_001"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_01a29dc0aa29.json",
+  "result": 600.0,
+  "result_type": "float",
+  "result_unit": null,
+  "result_world_id": "world_001",
+  "session_id": "demo_clean_orders_9f7ebd",
+  "skeptic_review": {
+    "concerns": [],
+    "has_blocking_concerns": false,
+    "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+  },
+  "status": "VERIFIED",
+  "truth_gate_result": {
+    "answer_blocked": false,
+    "assumptions": [],
+    "blocking_reasons": [],
+    "claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "600.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "600.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 555fe129667754e8...",
+            "value": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 600.0,
+        "numerical_value": 600.0,
+        "relevant_period": null,
+        "status": "VERIFIED",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
+    ],
+    "deterministic_decision": "PERMITTED",
+    "evidence_refs": [
+      {
+        "evidence_type": "execution_stdout",
+        "reference": "world_world_001 authoritative execution result",
+        "value": "600.0"
+      },
+      {
+        "evidence_type": "duckdb_result",
+        "reference": "independent DuckDB SQL calculation",
+        "value": "600.0"
+      },
+      {
+        "evidence_type": "verification_check",
+        "reference": "dual-path MATCH_CHECK",
+        "value": "PASS"
+      },
+      {
+        "evidence_type": "lineage",
+        "reference": "analysis code SHA-256: 555fe129667754e8...",
+        "value": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8"
+      }
+    ],
+    "failed_claims": [],
+    "overall_status": "VERIFIED",
+    "skeptic_review": {
+      "concerns": [],
+      "has_blocking_concerns": false,
+      "skeptic_notes": "Skeptic review identified 0 concern(s).\nBlocking concerns present: False."
+    },
+    "unsupported_claims": [],
+    "verified_claims": [
+      {
+        "claim_text": "Based on verified data analysis, the result for 'Total order amount' is 600.0.",
+        "claim_type": "NUMERICAL_VALUE",
+        "evidence_refs": [
+          {
+            "evidence_type": "execution_stdout",
+            "reference": "world_world_001 authoritative execution result",
+            "value": "600.0"
+          },
+          {
+            "evidence_type": "duckdb_result",
+            "reference": "independent DuckDB SQL calculation",
+            "value": "600.0"
+          },
+          {
+            "evidence_type": "verification_check",
+            "reference": "dual-path MATCH_CHECK",
+            "value": "PASS"
+          },
+          {
+            "evidence_type": "lineage",
+            "reference": "analysis code SHA-256: 555fe129667754e8...",
+            "value": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8"
+          }
+        ],
+        "mismatch_reason": null,
+        "normalized_value": 600.0,
+        "numerical_value": 600.0,
+        "relevant_period": null,
+        "status": "VERIFIED",
+        "subject": "amount",
+        "supported": true,
+        "unit": null
+      }
+    ]
+  },
+  "verification_results": [
+    {
+      "checks": [
+        {
+          "actual": "600.0",
+          "check": "PANDAS_PRIMARY",
+          "detail": "Primary execution succeeded and emitted authoritative result.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "PROVENANCE_CHECK",
+          "detail": "All provenance hashes and world identifiers verified.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": null,
+          "check": "SCHEMA_CHECK",
+          "detail": "All required tables and columns verified in target RepairWorld.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "600.0",
+          "check": "DUCKDB_SECONDARY",
+          "detail": "Independent DuckDB query executed successfully.",
+          "expected": null,
+          "outcome": "PASS"
+        },
+        {
+          "actual": "600.0",
+          "check": "MATCH_CHECK",
+          "detail": "Results match within tolerances: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "600.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "600.0",
+          "check": "METAMORPHIC_ROW_SHUFFLE",
+          "detail": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "600.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "700.0",
+          "check": "METAMORPHIC_DUPLICATE_INJECTION",
+          "detail": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "700.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "600.0",
+          "check": "METAMORPHIC_ADD_ZERO",
+          "detail": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "600.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_RATIO_DUPLICATION",
+          "detail": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "100.0",
+          "check": "METAMORPHIC_FILTER_MONOTONICITY",
+          "detail": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
+          "expected": "<= 600.0",
+          "outcome": "PASS"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_GROUP_TOTAL",
+          "detail": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        },
+        {
+          "actual": "N/A",
+          "check": "METAMORPHIC_TOP_N",
+          "detail": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "outcome": "SKIPPED"
+        }
+      ],
+      "duckdb_result": 600.0,
+      "failures": [],
+      "impact": null,
+      "independent_result": 600.0,
+      "metamorphic_results": [
+        {
+          "applicable": true,
+          "details": "Row order reversed. Result must remain equal: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "600.0",
+          "name": "METAMORPHIC_ROW_SHUFFLE",
+          "observed": "600.0",
+          "status": "PASS",
+          "transformation": "Reversed rows (iloc[::-1]) on all input tables."
+        },
+        {
+          "applicable": true,
+          "details": "Duplicate row 0 injected: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "700.0",
+          "name": "METAMORPHIC_DUPLICATE_INJECTION",
+          "observed": "700.0",
+          "status": "PASS",
+          "transformation": "Appended clone of row 0 to main table."
+        },
+        {
+          "applicable": true,
+          "details": "Added row with amount=0.0: Numeric diff: 0.0 (abs_tol=1e-09, rel_tol=1e-09)",
+          "expected": "600.0",
+          "name": "METAMORPHIC_ADD_ZERO",
+          "observed": "600.0",
+          "status": "PASS",
+          "transformation": "Appended synthetic row with 0.0 metric value."
+        },
+        {
+          "applicable": false,
+          "details": "Metric 'sum' is not a scalar ratio/percentage.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_RATIO_DUPLICATION",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": true,
+          "details": "Subset (first 1 rows) resulted in 100.0 <= 600.0",
+          "expected": "<= 600.0",
+          "name": "METAMORPHIC_FILTER_MONOTONICITY",
+          "observed": "100.0",
+          "status": "PASS",
+          "transformation": "Restricted dataset to first half of rows."
+        },
+        {
+          "applicable": false,
+          "details": "Not a full grouped SUM without limit.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_GROUP_TOTAL",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        },
+        {
+          "applicable": false,
+          "details": "Query is not a Top-1 winner selection.",
+          "expected": "N/A",
+          "name": "METAMORPHIC_TOP_N",
+          "observed": "N/A",
+          "status": "SKIPPED",
+          "transformation": "None"
+        }
+      ],
+      "pandas_result": 600.0,
+      "primary_result": 600.0,
+      "provenance_details": {
+        "code_hash": "555fe129667754e8f2f88ee2e95124d842af762ac692fb45efa1c49988fb3da8",
+        "current_table_hashes": {
+          "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+        },
+        "recorded_table_hashes": {
+          "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+        },
+        "world_id": "world_001"
+      },
+      "provenance_verified": true,
+      "results_match": true,
+      "status": "VERIFIED",
+      "tolerance_abs": 1e-09,
+      "tolerance_rel": 1e-09,
+      "verification_passed": true,
+      "warnings": [],
+      "world_assumptions": [],
+      "world_id": "world_001",
+      "world_policies": [
+        "DUPLICATE_ROWS: KEEP"
+      ]
+    }
+  ]
+}

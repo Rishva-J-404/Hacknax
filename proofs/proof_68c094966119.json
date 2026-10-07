@@ -1,0 +1,215 @@
+{
+  "analysis_code_path": "proofs\\unanswerable.py",
+  "analysis_plan": {
+    "aggregation": {
+      "column": {
+        "column": "status",
+        "table": "clean_orders"
+      },
+      "operation": "percentage",
+      "unit": null
+    },
+    "ambiguity_flags": [],
+    "analysis_intent": "PERCENTAGE",
+    "assumptions": [],
+    "filters": [
+      {
+        "column": {
+          "column": "status",
+          "table": "clean_orders"
+        },
+        "operator": "==",
+        "value": "successful"
+      }
+    ],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "What is churn rate?",
+    "required_columns": [
+      {
+        "column": "status",
+        "table": "clean_orders"
+      }
+    ],
+    "required_tables": [
+      "clean_orders"
+    ],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "READY",
+    "unanswerable_evidence": null,
+    "unanswerable_reason": null
+  },
+  "answer_blocked": true,
+  "assumptions": [],
+  "blocking_reasons": [
+    "Unsupported aggregation operation 'percentage'. Supported: ['count', 'max', 'mean', 'median', 'min', 'sum']"
+  ],
+  "claims": [],
+  "created_at": "2026-10-07T10:39:57.746531",
+  "data_quality_ledger": {
+    "all_issues": [],
+    "audit_timestamp": "2026-10-07T10:39:57.746017+00:00",
+    "has_critical_issues": false,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 3,
+        "column_names": [
+          "order_id",
+          "amount",
+          "status"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "order_id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "2",
+              "3"
+            ],
+            "total_count": 3,
+            "unique_count": 3
+          },
+          {
+            "column_name": "amount",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "100.0",
+              "200.0",
+              "300.0"
+            ],
+            "total_count": 3,
+            "unique_count": 3
+          },
+          {
+            "column_name": "status",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "completed"
+            ],
+            "total_count": 3,
+            "unique_count": 1
+          }
+        ],
+        "dataset_sha256": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3",
+        "issues": [],
+        "row_count": 3,
+        "source": "clean_orders"
+      }
+    ]
+  },
+  "deterministic_decision": "BLOCKED",
+  "draft_explanation": null,
+  "execution_summary": {
+    "duration_seconds": 0.0,
+    "execution_error": "Unsupported aggregation operation 'percentage'. Supported: ['count', 'max', 'mean', 'median', 'min', 'sum']",
+    "execution_success": false,
+    "exit_code": 1,
+    "generated_code_hash": null,
+    "input_data_hashes": {},
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": ""
+  },
+  "formatted_result": null,
+  "hashes": {
+    "analysis_code_sha256": null,
+    "canonical_proof_sha256": "68c0949661195ac7a944fb7413f1347b64f777d78addfde658534ed95406cd91",
+    "dataset_sha256": {
+      "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+    },
+    "policy_sha256": null
+  },
+  "impact_range": {},
+  "lineage": {
+    "columns_used": [
+      "clean_orders.status"
+    ],
+    "filters_applied": [
+      "clean_orders.status == successful"
+    ],
+    "joins_performed": [],
+    "repair_policy_summary": null,
+    "source_files": [
+      "clean_orders"
+    ],
+    "tables_used": [
+      "clean_orders"
+    ],
+    "transformations": [
+      "PERCENTAGE(clean_orders.status)"
+    ]
+  },
+  "metamorphic_summary": [],
+  "normalized_question": "What is churn rate?",
+  "proof_id": "proof_68c094966119",
+  "question": "What is churn rate?",
+  "refusal_reason": null,
+  "relevant_period": null,
+  "repair_worlds": [],
+  "replay": {
+    "canonical_payload_sha256": "68c0949661195ac7a944fb7413f1347b64f777d78addfde658534ed95406cd91",
+    "code_sha256": null,
+    "dataset_sha256": {
+      "clean_orders": "191b8e40d9e9b7fa8db7e279421eccb2917c3ebc505b0ccba52a02bfc91d4cb3"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_68c094966119",
+    "python_version": "3.11.9",
+    "replay_executable": false,
+    "reproduction_command": "python scripts/replay.py proofs/proof_68c094966119.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "unanswerable_world"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_68c094966119.json",
+  "result": null,
+  "result_type": null,
+  "result_unit": null,
+  "result_world_id": "unanswerable_world",
+  "session_id": null,
+  "skeptic_review": null,
+  "status": "UNANSWERABLE",
+  "truth_gate_result": {
+    "answer_blocked": true,
+    "assumptions": [],
+    "blocking_reasons": [
+      "Unsupported aggregation operation 'percentage'. Supported: ['count', 'max', 'mean', 'median', 'min', 'sum']"
+    ],
+    "claims": [],
+    "deterministic_decision": "BLOCKED",
+    "evidence_refs": [],
+    "failed_claims": [],
+    "overall_status": "UNANSWERABLE",
+    "skeptic_review": null,
+    "unsupported_claims": [],
+    "verified_claims": []
+  },
+  "verification_results": []
+}

@@ -1,0 +1,538 @@
+{
+  "analysis_code_path": "proofs\\unanswerable.py",
+  "analysis_plan": {
+    "aggregation": null,
+    "ambiguity_flags": [],
+    "analysis_intent": null,
+    "assumptions": [],
+    "filters": [],
+    "group_by": [],
+    "join_keys": [],
+    "limit": null,
+    "planner_notes": null,
+    "question": "What was customer churn rate in 2024?",
+    "required_columns": [],
+    "required_tables": [],
+    "sort_ascending": true,
+    "sort_by": null,
+    "status": "UNANSWERABLE",
+    "unanswerable_evidence": "Question asks for 'score', but no matching column was found.",
+    "unanswerable_reason": "MISSING_REQUIRED_FIELD"
+  },
+  "answer_blocked": true,
+  "assumptions": [],
+  "blocking_reasons": [
+    "Question asks for 'score', but no matching column was found."
+  ],
+  "claims": [],
+  "created_at": "2026-10-07T11:07:48.958371",
+  "data_quality_ledger": {
+    "all_issues": [
+      {
+        "affected_columns": [
+          "order_id",
+          "date",
+          "region",
+          "amount",
+          "currency",
+          "qty"
+        ],
+        "affected_source": "orders",
+        "description": "6 exact duplicate rows detected in table 'orders'.",
+        "evidence": {
+          "duplicate_row_count": 6,
+          "original_row_count": 129,
+          "unique_row_count": 123
+        },
+        "issue_type": "DUPLICATE_ROWS",
+        "severity": "HIGH"
+      },
+      {
+        "affected_columns": [
+          "order_id"
+        ],
+        "affected_source": "orders",
+        "description": "Candidate key column 'order_id' in 'orders' contains 9 duplicate key values across 129 rows.",
+        "evidence": {
+          "duplicate_key_count": 9,
+          "key_column": "order_id",
+          "sample_duplicate_keys": [
+            "ORD0003",
+            "ORD0010",
+            "ORD0021",
+            "ORD0031",
+            "ORD0045"
+          ],
+          "unique_keys": 120
+        },
+        "issue_type": "DUPLICATE_KEYS",
+        "severity": "HIGH"
+      },
+      {
+        "affected_columns": [
+          "order_id",
+          "amount"
+        ],
+        "affected_source": "orders",
+        "description": "Contradictory values detected for candidate key 'order_id': conflicting values found across rows with identical key.",
+        "evidence": {
+          "key_column": "order_id",
+          "sample_conflicts": [
+            {
+              "column": "amount",
+              "conflicting_values": [
+                "9999",
+                "₹32,338"
+              ],
+              "key": "ORD0015"
+            },
+            {
+              "column": "amount",
+              "conflicting_values": [
+                "13,693",
+                "9999"
+              ],
+              "key": "ORD0028"
+            },
+            {
+              "column": "amount",
+              "conflicting_values": [
+                "301.02",
+                "9999"
+              ],
+              "key": "ORD0064"
+            }
+          ]
+        },
+        "issue_type": "CONTRADICTORY_VALUES",
+        "severity": "CRITICAL"
+      },
+      {
+        "affected_columns": [
+          "date"
+        ],
+        "affected_source": "orders",
+        "description": "Column 'date' in 'orders' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '08/03/2025').",
+        "evidence": {
+          "ambiguous_count": 37,
+          "column": "date",
+          "has_part1_gt_12": true,
+          "has_part2_gt_12": true,
+          "possible_interpretations": [
+            "DD/MM/YYYY",
+            "MM/DD/YYYY"
+          ],
+          "sample_ambiguous_dates": [
+            "08/03/2025",
+            "04/02/2025",
+            "08/02/2025",
+            "02/03/2025",
+            "11/01/2025"
+          ]
+        },
+        "issue_type": "AMBIGUOUS_DATE_FORMAT",
+        "severity": "HIGH"
+      },
+      {
+        "affected_columns": [
+          "amount"
+        ],
+        "affected_source": "orders",
+        "description": "Column 'amount' in 'orders' contains 8 missing values out of 129 rows (6.2%).",
+        "evidence": {
+          "column": "amount",
+          "missing_count": 8,
+          "missing_pct": 0.062,
+          "total_rows": 129
+        },
+        "issue_type": "MISSING_VALUES",
+        "severity": "MEDIUM"
+      },
+      {
+        "affected_columns": [
+          "currency"
+        ],
+        "affected_source": "orders",
+        "description": "Multiple currencies detected in column 'currency': INR, USD. Calculations across mixed currencies require explicit policy/rates.",
+        "evidence": {
+          "column": "currency",
+          "currencies_detected": [
+            "INR",
+            "USD"
+          ],
+          "sample_values": [
+            "INR",
+            "INR",
+            "INR",
+            "INR",
+            "USD"
+          ]
+        },
+        "issue_type": "MIXED_CURRENCIES",
+        "severity": "CRITICAL"
+      }
+    ],
+    "audit_timestamp": "2026-10-07T11:07:48.958371+00:00",
+    "has_critical_issues": true,
+    "session_id": null,
+    "table_profiles": [
+      {
+        "column_count": 6,
+        "column_names": [
+          "order_id",
+          "date",
+          "region",
+          "amount",
+          "currency",
+          "qty"
+        ],
+        "column_profiles": [
+          {
+            "column_name": "order_id",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": true,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "ORD0001",
+              "ORD0002",
+              "ORD0003",
+              "ORD0004",
+              "ORD0005"
+            ],
+            "total_count": 129,
+            "unique_count": 120
+          },
+          {
+            "column_name": "date",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "date",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "01/03/2025",
+              "01/14/2025",
+              "01/16/2025",
+              "01/18/2025",
+              "01/27/2025"
+            ],
+            "total_count": 129,
+            "unique_count": 90
+          },
+          {
+            "column_name": "region",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "East",
+              "North",
+              "South",
+              "West"
+            ],
+            "total_count": 129,
+            "unique_count": 4
+          },
+          {
+            "column_name": "amount",
+            "detected_currencies": [
+              "INR"
+            ],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": false,
+            "missing_count": 8,
+            "missing_pct": 0.062,
+            "sample_values": [
+              "10952",
+              "11,535",
+              "12,286",
+              "12139",
+              "12920"
+            ],
+            "total_count": 129,
+            "unique_count": 113
+          },
+          {
+            "column_name": "currency",
+            "detected_currencies": [
+              "INR",
+              "USD"
+            ],
+            "detected_units": [],
+            "inferred_type": "text",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "INR",
+              "USD"
+            ],
+            "total_count": 129,
+            "unique_count": 2
+          },
+          {
+            "column_name": "qty",
+            "detected_currencies": [],
+            "detected_units": [],
+            "inferred_type": "numeric",
+            "is_potential_key": false,
+            "missing_count": 0,
+            "missing_pct": 0.0,
+            "sample_values": [
+              "1",
+              "10",
+              "11",
+              "12",
+              "13"
+            ],
+            "total_count": 129,
+            "unique_count": 19
+          }
+        ],
+        "dataset_sha256": "b4dbb5099aba73d3c11f8946678754715f0ab6b23620d390ef69e9d9ae4b3a81",
+        "issues": [
+          {
+            "affected_columns": [
+              "order_id",
+              "date",
+              "region",
+              "amount",
+              "currency",
+              "qty"
+            ],
+            "affected_source": "orders",
+            "description": "6 exact duplicate rows detected in table 'orders'.",
+            "evidence": {
+              "duplicate_row_count": 6,
+              "original_row_count": 129,
+              "unique_row_count": 123
+            },
+            "issue_type": "DUPLICATE_ROWS",
+            "severity": "HIGH"
+          },
+          {
+            "affected_columns": [
+              "order_id"
+            ],
+            "affected_source": "orders",
+            "description": "Candidate key column 'order_id' in 'orders' contains 9 duplicate key values across 129 rows.",
+            "evidence": {
+              "duplicate_key_count": 9,
+              "key_column": "order_id",
+              "sample_duplicate_keys": [
+                "ORD0003",
+                "ORD0010",
+                "ORD0021",
+                "ORD0031",
+                "ORD0045"
+              ],
+              "unique_keys": 120
+            },
+            "issue_type": "DUPLICATE_KEYS",
+            "severity": "HIGH"
+          },
+          {
+            "affected_columns": [
+              "order_id",
+              "amount"
+            ],
+            "affected_source": "orders",
+            "description": "Contradictory values detected for candidate key 'order_id': conflicting values found across rows with identical key.",
+            "evidence": {
+              "key_column": "order_id",
+              "sample_conflicts": [
+                {
+                  "column": "amount",
+                  "conflicting_values": [
+                    "9999",
+                    "₹32,338"
+                  ],
+                  "key": "ORD0015"
+                },
+                {
+                  "column": "amount",
+                  "conflicting_values": [
+                    "13,693",
+                    "9999"
+                  ],
+                  "key": "ORD0028"
+                },
+                {
+                  "column": "amount",
+                  "conflicting_values": [
+                    "301.02",
+                    "9999"
+                  ],
+                  "key": "ORD0064"
+                }
+              ]
+            },
+            "issue_type": "CONTRADICTORY_VALUES",
+            "severity": "CRITICAL"
+          },
+          {
+            "affected_columns": [
+              "date"
+            ],
+            "affected_source": "orders",
+            "description": "Column 'date' in 'orders' contains values compatible with both DD/MM/YYYY and MM/DD/YYYY (e.g. '08/03/2025').",
+            "evidence": {
+              "ambiguous_count": 37,
+              "column": "date",
+              "has_part1_gt_12": true,
+              "has_part2_gt_12": true,
+              "possible_interpretations": [
+                "DD/MM/YYYY",
+                "MM/DD/YYYY"
+              ],
+              "sample_ambiguous_dates": [
+                "08/03/2025",
+                "04/02/2025",
+                "08/02/2025",
+                "02/03/2025",
+                "11/01/2025"
+              ]
+            },
+            "issue_type": "AMBIGUOUS_DATE_FORMAT",
+            "severity": "HIGH"
+          },
+          {
+            "affected_columns": [
+              "amount"
+            ],
+            "affected_source": "orders",
+            "description": "Column 'amount' in 'orders' contains 8 missing values out of 129 rows (6.2%).",
+            "evidence": {
+              "column": "amount",
+              "missing_count": 8,
+              "missing_pct": 0.062,
+              "total_rows": 129
+            },
+            "issue_type": "MISSING_VALUES",
+            "severity": "MEDIUM"
+          },
+          {
+            "affected_columns": [
+              "currency"
+            ],
+            "affected_source": "orders",
+            "description": "Multiple currencies detected in column 'currency': INR, USD. Calculations across mixed currencies require explicit policy/rates.",
+            "evidence": {
+              "column": "currency",
+              "currencies_detected": [
+                "INR",
+                "USD"
+              ],
+              "sample_values": [
+                "INR",
+                "INR",
+                "INR",
+                "INR",
+                "USD"
+              ]
+            },
+            "issue_type": "MIXED_CURRENCIES",
+            "severity": "CRITICAL"
+          }
+        ],
+        "row_count": 129,
+        "source": "orders"
+      }
+    ]
+  },
+  "deterministic_decision": "BLOCKED",
+  "draft_explanation": null,
+  "execution_summary": {
+    "duration_seconds": 0.0,
+    "execution_error": "Question asks for 'score', but no matching column was found.",
+    "execution_success": false,
+    "exit_code": 1,
+    "generated_code_hash": null,
+    "input_data_hashes": {},
+    "row_count_waterfall": {},
+    "stderr": "",
+    "stdout": ""
+  },
+  "formatted_result": null,
+  "hashes": {
+    "analysis_code_sha256": null,
+    "canonical_proof_sha256": "49b89ec6edfef49be68cef6cc15f4d281993a90842f21e4698728861dc561900",
+    "dataset_sha256": {
+      "orders": "b4dbb5099aba73d3c11f8946678754715f0ab6b23620d390ef69e9d9ae4b3a81"
+    },
+    "policy_sha256": null
+  },
+  "impact_range": {},
+  "lineage": {
+    "columns_used": [],
+    "filters_applied": [],
+    "joins_performed": [],
+    "repair_policy_summary": null,
+    "source_files": [
+      "orders"
+    ],
+    "tables_used": [],
+    "transformations": []
+  },
+  "metamorphic_summary": [],
+  "normalized_question": "What was customer churn rate in 2024?",
+  "proof_id": "proof_49b89ec6edfe",
+  "question": "What was customer churn rate in 2024?",
+  "refusal_reason": null,
+  "relevant_period": "2024",
+  "repair_worlds": [],
+  "replay": {
+    "canonical_payload_sha256": "49b89ec6edfef49be68cef6cc15f4d281993a90842f21e4698728861dc561900",
+    "code_sha256": null,
+    "dataset_sha256": {
+      "orders": "b4dbb5099aba73d3c11f8946678754715f0ab6b23620d390ef69e9d9ae4b3a81"
+    },
+    "dependencies": {
+      "duckdb": "1.5.6",
+      "pandas": "2.2.3",
+      "pydantic": "2.13.5"
+    },
+    "platform": "win32",
+    "proof_id": "proof_49b89ec6edfe",
+    "python_version": "3.11.9",
+    "replay_executable": false,
+    "reproduction_command": "python scripts/replay.py proofs/proof_49b89ec6edfe.json",
+    "tolerance": {
+      "abs_tol": 1e-06,
+      "rel_tol": 0.0001
+    },
+    "world_id": "unanswerable_world"
+  },
+  "reproduction_command": "python scripts/replay.py proofs/proof_49b89ec6edfe.json",
+  "result": null,
+  "result_type": null,
+  "result_unit": null,
+  "result_world_id": "unanswerable_world",
+  "session_id": null,
+  "skeptic_review": null,
+  "status": "UNANSWERABLE",
+  "truth_gate_result": {
+    "answer_blocked": true,
+    "assumptions": [],
+    "blocking_reasons": [
+      "Question asks for 'score', but no matching column was found."
+    ],
+    "claims": [],
+    "deterministic_decision": "BLOCKED",
+    "evidence_refs": [],
+    "failed_claims": [],
+    "overall_status": "UNANSWERABLE",
+    "skeptic_review": null,
+    "unsupported_claims": [],
+    "verified_claims": []
+  },
+  "verification_results": []
+}
