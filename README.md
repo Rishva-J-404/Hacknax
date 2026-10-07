@@ -354,10 +354,3 @@ pytest -q
 - **Zero Silent Data Mutation:** Ingested source files are strictly immutable; repair transformations exist solely inside policy-isolated runtime worlds.
 
 ---
-
-## HackNax 2026 Submission
-
-- **Track:** HNX26PSI08 — Proof-Carrying Data Analyst (Agentic GenAI)
-- **Repository:** [https://github.com/Rishva-J-404/Hacknax.git](https://github.com/Rishva-J-404/Hacknax.git)
-- **Architecture Core:** Decoupled Agentic Reasoning, Sandboxed Computation, Dual-Path DuckDB Verification, Multi-World Impact Analysis, and Cryptographic Proof Cards.
-- **Product Law:** **LLM Proposes. Code Computes. Verification Decides. No Proof = No Number.**
